@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   width="144.86871mm"
+   height="144.86874mm"
+   viewBox="0 0 144.86871 144.86874"
+   version="1.1"
+   id="svg1"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <defs
+     id="defs1">
+    <clipPath
+       clipPathUnits="userSpaceOnUse"
+       id="clipPath20">
+      <rect
+         style="display:inline;fill:#000000;stroke-width:0.264583"
+         id="rect21"
+         width="144.86873"
+         height="144.86873"
+         x="34.019306"
+         y="68.803093"
+         rx="20"
+         ry="20" />
+    </clipPath>
+    <clipPath
+       clipPathUnits="userSpaceOnUse"
+       id="clipPath21">
+      <rect
+         style="display:inline;fill:#000000;stroke-width:0.264583"
+         id="rect22"
+         width="144.86873"
+         height="144.86873"
+         x="34.019306"
+         y="68.803093"
+         rx="20"
+         ry="20" />
+    </clipPath>
+  </defs>
+  <g
+     id="layer1"
+     transform="translate(-34.019307,-68.803091)">
+    <rect
+       style="display:inline;fill:#000000;stroke-width:0.264583"
+       id="rect20"
+       width="144.86873"
+       height="144.86873"
+       x="34.019306"
+       y="68.803093"
+       rx="20"
+       ry="20" />
+    <path
+       style="fill:none;fill-opacity:1;stroke:#8a2be2;stroke-width:1.465;stroke-dasharray:none;stroke-opacity:1"
+       d="m 32.17369,139.04897 c 62.724311,84.29874 148.14657,22.368 148.14657,22.368"
+       id="path1"
+       clip-path="url(#clipPath21)" />
+    <path
+       style="fill:none;fill-opacity:1;stroke:#8a2be2;stroke-width:1.465;stroke-dasharray:none;stroke-opacity:1"
+       d="M 148.65623,182.44174 C 141.89913,78.922945 51.894538,66.219592 51.894538,66.219592"
+       id="path2"
+       clip-path="url(#clipPath20)" />
+    <text
+       xml:space="preserve"
+       style="font-size:8.46667px;fill:none;fill-opacity:1;stroke:#8a2be2;stroke-width:1.465;stroke-dasharray:none;stroke-opacity:1"
+       x="145.71309"
+       y="192.96359"
+       id="text3"><tspan
+         id="tspan3"
+         style="font-size:8.46667px;stroke:#8a2be2;stroke-width:1.465;stroke-opacity:1"
+         x="145.71309"
+         y="192.96359">N</tspan></text>
+  </g>
+</svg>
