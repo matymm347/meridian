@@ -1,6 +1,8 @@
 # meridian
 
-![Meridian Logo](https://raw.githubusercontent.com/matymm347/meridian/d1c77fe0ece2f7991d42b0191cb111e892837ae6/frontend/MerdianLogo.svg?token=BDMO77MMHSTP4Q3T6G7LJ23HAMHYK)
+<img src="https://raw.githubusercontent.com/matymm347/meridian/d1c77fe0ece2f7991d42b0191cb111e892837ae6/frontend/MerdianLogo.svg?token=BDMO77MMHSTP4Q3T6G7LJ23HAMHYK" alt="Meridian Logo" width="100" />
+
+<p align="center">Meridian</p>
 
 <div align="center">
 	<code><img width="50" src="https://user-images.githubusercontent.com/25181517/183897015-94a058a6-b86e-4e42-a37f-bf92061753e5.png" alt="React" title="React"/></code>
