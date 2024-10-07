@@ -1,0 +1,11 @@
+{
+  "name": "meridian",
+  "version": "0.1.0",
+  "description": "<div align=\"center\">\r \t<img src=\"https://raw.githubusercontent.com/matymm347/meridian/d2b5a749a26738b59b3f1edc1d5fcc96c3ad93ac/frontend/Meridian%20Logo.svg?token=BDMO77J5XXPXN62DZE47RETHAMKES\" alt=\"Meridian Logo\" width=\"100\" />\r \t<p>Meridian</p>\r \t<br>\r </div>",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Mateusz Jochimiak",
+  "license": "ISC"
+}
