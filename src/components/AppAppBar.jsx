@@ -41,7 +41,7 @@ export default function AppAppBar() {
         boxShadow: 0,
         bgcolor: "transparent",
         backgroundImage: "none",
-        mt: 10,
+        mt: 3,
       }}
     >
       <Container maxWidth="lg">
