@@ -1,11 +1,33 @@
 {
   "name": "meridian",
-  "version": "0.1.0",
-  "description": "<div align=\"center\">\r \t<img src=\"https://raw.githubusercontent.com/matymm347/meridian/d2b5a749a26738b59b3f1edc1d5fcc96c3ad93ac/frontend/Meridian%20Logo.svg?token=BDMO77J5XXPXN62DZE47RETHAMKES\" alt=\"Meridian Logo\" width=\"100\" />\r \t<p>Meridian</p>\r \t<br>\r </div>",
-  "main": "index.html",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "dev": "vite",
+    "build": "vite build",
+    "lint": "eslint .",
+    "preview": "vite preview"
   },
-  "author": "Mateusz Jochimiak",
-  "license": "ISC"
+  "dependencies": {
+    "@emotion/react": "^11.13.3",
+    "@emotion/styled": "^11.13.0",
+    "@fontsource/roboto": "^5.1.0",
+    "@mui/icons-material": "^6.1.3",
+    "@mui/material": "^6.1.3",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.11.1",
+    "@types/react": "^18.3.10",
+    "@types/react-dom": "^18.3.0",
+    "@vitejs/plugin-react": "^4.3.2",
+    "eslint": "^9.11.1",
+    "eslint-plugin-react": "^7.37.0",
+    "eslint-plugin-react-hooks": "^5.1.0-rc.0",
+    "eslint-plugin-react-refresh": "^0.4.12",
+    "globals": "^15.9.0",
+    "vite": "^5.4.8"
+  }
 }
