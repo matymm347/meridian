@@ -16,7 +16,7 @@ import "@fontsource/roboto/500.css";
 import "@fontsource/roboto/700.css";
 
 export default function WelcomePage() {
-  const [mode, setMode] = useState("light");
+  const [mode, setMode] = useState("dark");
   const theme = createTheme({
     palette: { mode },
     typography: {
@@ -24,18 +24,20 @@ export default function WelcomePage() {
     },
   });
 
-  // This code only runs on the client side, to determine the system color preference
+  // Determine the system color preference
   useEffect(() => {
     // Check if there is a preferred mode in localStorage
     const savedMode = localStorage.getItem("themeMode");
     if (savedMode) {
       setMode(savedMode);
     } else {
-      // If no preference is found, it uses system preference
-      const systemPrefersDark = window.matchMedia(
-        "(prefers-color-scheme: dark)"
-      ).matches;
-      setMode(systemPrefersDark ? "dark" : "light");
+      if (window.matchMedia("(prefers-color-scheme: dark)").matches) {
+        setMode("dark");
+        localStorage.setItem("themeMode", "dark");
+      } else {
+        setMode("light");
+        localStorage.setItem("themeMode", "light");
+      }
     }
   }, []);
 
