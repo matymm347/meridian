@@ -24,6 +24,14 @@ export default function WelcomePage() {
     },
   });
 
+  const handleModeChange = () => {
+    setMode((prevMode) => {
+      const newMode = prevMode === "dark" ? "light" : "dark";
+      localStorage.setItem("themeMode", newMode);
+      return newMode;
+    });
+  };
+
   // Determine the system color preference
   useEffect(() => {
     // Check if there is a preferred mode in localStorage
@@ -44,7 +52,8 @@ export default function WelcomePage() {
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline enableColorScheme />
-      <AppAppBar />
+      <AppAppBar handleModeChange={handleModeChange} />
+      {/* <CustomToolbar /> */}
       <Hero />
       <div>
         <Features />
