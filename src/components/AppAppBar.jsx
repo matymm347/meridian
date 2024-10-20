@@ -50,7 +50,11 @@ export default function AppAppBar({ handleModeChange }) {
             sx={{ flexGrow: 1, display: "flex", alignItems: "center", px: 0 }}
           >
             <MeridianLogo />
-            <Box sx={{ display: { xs: "none", md: "flex" } }}>
+            <Box
+              sx={{
+                display: { xs: "none", md: "flex" },
+              }}
+            >
               <Button variant="text" color="info" size="small">
                 Features
               </Button>
@@ -59,6 +63,11 @@ export default function AppAppBar({ handleModeChange }) {
               </Button>
             </Box>
           </Box>
+          <Box>
+            <IconButton onClick={handleModeChange}>
+              <LightModeIcon />
+            </IconButton>
+          </Box>
           <Box
             sx={{
               display: { xs: "none", md: "flex" },
@@ -66,9 +75,6 @@ export default function AppAppBar({ handleModeChange }) {
               alignItems: "center",
             }}
           >
-            <IconButton>
-              <LightModeIcon onClick={handleModeChange} />
-            </IconButton>
             <Button color="primary" variant="text" size="small">
               Sign in
             </Button>
@@ -95,11 +101,7 @@ export default function AppAppBar({ handleModeChange }) {
                 </Box>
                 <Divider sx={{ my: 3 }} />
                 <MenuItem>Features</MenuItem>
-                <MenuItem>Testimonials</MenuItem>
-                <MenuItem>Highlights</MenuItem>
-                <MenuItem>Pricing</MenuItem>
-                <MenuItem>FAQ</MenuItem>
-                <MenuItem>Blog</MenuItem>
+                <MenuItem>About</MenuItem>
                 <MenuItem>
                   <Button color="primary" variant="contained" fullWidth>
                     Sign up

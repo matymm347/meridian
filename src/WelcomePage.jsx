@@ -1,14 +1,8 @@
 import { useState, useEffect } from "react";
 import { ThemeProvider, createTheme } from "@mui/material/styles";
 import CssBaseline from "@mui/material/CssBaseline";
-import Divider from "@mui/material/Divider";
 import AppAppBar from "./components/AppAppBar";
 import Hero from "./components/Hero";
-import Highlights from "./components/Highlights";
-import Pricing from "./components/Pricing";
-import Features from "./components/Features";
-import Testimonials from "./components/Testimonials";
-import FAQ from "./components/FAQ";
 import Footer from "./components/Footer";
 import "@fontsource/roboto/300.css";
 import "@fontsource/roboto/400.css";
@@ -56,16 +50,6 @@ export default function WelcomePage() {
       {/* <CustomToolbar /> */}
       <Hero />
       <div>
-        <Features />
-        <Divider />
-        <Testimonials />
-        <Divider />
-        <Highlights />
-        <Divider />
-        <Pricing />
-        <Divider />
-        <FAQ />
-        <Divider />
         <Footer />
       </div>
     </ThemeProvider>

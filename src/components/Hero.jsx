@@ -1,35 +1,8 @@
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import Container from "@mui/material/Container";
-import Link from "@mui/material/Link";
 import Stack from "@mui/material/Stack";
 import Typography from "@mui/material/Typography";
-import { styled } from "@mui/material/styles";
-
-const StyledBox = styled("div")(({ theme }) => ({
-  alignSelf: "center",
-  width: "100%",
-  height: 400,
-  marginTop: theme.spacing(8),
-  borderRadius: theme.shape.borderRadius,
-  outline: "6px solid",
-  outlineColor: "hsla(220, 25%, 80%, 0.2)",
-  border: "1px solid",
-  borderColor: theme.palette.grey[200],
-  boxShadow: "0 0 12px 8px hsla(220, 25%, 80%, 0.2)",
-  backgroundImage: `url(${"/static/screenshots/material-ui/getting-started/templates/dashboard.jpg"})`,
-  backgroundSize: "cover",
-  [theme.breakpoints.up("sm")]: {
-    marginTop: theme.spacing(10),
-    height: 700,
-  },
-  ...theme.applyStyles("dark", {
-    boxShadow: "0 0 24px 12px hsla(210, 100%, 25%, 0.2)",
-    backgroundImage: `url(${"/static/screenshots/material-ui/getting-started/templates/dashboard-dark.jpg"})`,
-    outlineColor: "hsla(220, 20%, 42%, 0.1)",
-    borderColor: theme.palette.grey[700],
-  }),
-}));
 
 export default function Hero() {
   return (
@@ -69,7 +42,6 @@ export default function Hero() {
               fontSize: "clamp(3rem, 10vw, 3.5rem)",
             }}
           >
-            {/* Our&nbsp;latest&nbsp;products */}
             Prepare for stargazing fast
           </Typography>
           <Typography
@@ -91,19 +63,7 @@ export default function Hero() {
           >
             Start now
           </Button>
-          <Typography
-            variant="caption"
-            color="text.secondary"
-            sx={{ textAlign: "center" }}
-          >
-            By clicking &quot;Start now&quot; you agree to our&nbsp;
-            <Link href="#" color="primary">
-              Terms & Conditions
-            </Link>
-            .
-          </Typography>
         </Stack>
-        <StyledBox id="image" />
       </Container>
     </Box>
   );
