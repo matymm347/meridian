@@ -47,11 +47,8 @@ export default function WelcomePage() {
     <ThemeProvider theme={theme}>
       <CssBaseline enableColorScheme />
       <AppAppBar handleModeChange={handleModeChange} />
-      {/* <CustomToolbar /> */}
       <Hero />
-      <div>
-        <Footer />
-      </div>
+      <Footer />
     </ThemeProvider>
   );
 }

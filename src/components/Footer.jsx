@@ -11,7 +11,7 @@ function Copyright() {
     <Typography variant="body2" sx={{ color: "text.secondary", mt: 1 }}>
       {"Copyright © "}
       <Link color="text.secondary" href="https://mui.com/">
-        Meridian
+        Glass Bird
       </Link>
       &nbsp;
       {new Date().getFullYear()}
@@ -27,7 +27,7 @@ export default function Footer() {
         flexDirection: "column",
         alignItems: "center",
         gap: { xs: 4, sm: 8 },
-        py: { xs: 8, sm: 10 },
+        py: { xs: 5, sm: 5 },
         textAlign: { sm: "center", md: "left" },
       }}
     >
