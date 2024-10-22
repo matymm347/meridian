@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { ThemeProvider, createTheme } from "@mui/material/styles";
 import CssBaseline from "@mui/material/CssBaseline";
+import Box from "@mui/material/Box";
 import AppAppBar from "./components/AppAppBar";
 import Hero from "./components/Hero";
 import Footer from "./components/Footer";
@@ -46,9 +47,13 @@ export default function WelcomePage() {
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline enableColorScheme />
-      <AppAppBar handleModeChange={handleModeChange} />
-      <Hero />
-      <Footer />
+      <Box sx={{ display: "flex", height: "100dvh", flexDirection: "column" }}>
+        <AppAppBar handleModeChange={handleModeChange} />
+        <Box sx={{ flexGrow: "1" }}>
+          <Hero />
+        </Box>
+        <Footer />
+      </Box>
     </ThemeProvider>
   );
 }
