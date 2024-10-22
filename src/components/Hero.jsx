@@ -3,8 +3,15 @@ import Button from "@mui/material/Button";
 import Container from "@mui/material/Container";
 import Stack from "@mui/material/Stack";
 import Typography from "@mui/material/Typography";
+import { useNavigate } from "react-router-dom";
 
 export default function Hero() {
+  const navigate = useNavigate();
+
+  const handleRedirectToLauncher = () => {
+    navigate("/observationlauncher");
+  };
+
   return (
     <Box
       id="hero"
@@ -60,6 +67,7 @@ export default function Hero() {
             color="primary"
             size="small"
             sx={{ minWidth: "fit-content" }}
+            onClick={handleRedirectToLauncher}
           >
             Start now
           </Button>
