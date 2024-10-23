@@ -4,7 +4,10 @@ import WelcomePage from "./WelcomePage";
 import App from "./components/App";
 import Layout from "./components/Dashboard";
 import DashboardPage from "./components/DashBoardPage";
-import OrdersPage from "./components/OrdersPage";
+import ThisEvening from "./(dashboard)/thisevening/ThisEvening";
+import Tommorow from "./(dashboard)/thisevening/Tommorow";
+import MeridianChoice from "./(dashboard)/thisevening/MeridianChoice";
+import AdvancedFinder from "./(dashboard)/thisevening/AdvancedFinder";
 
 const router = createBrowserRouter([
   {
@@ -19,8 +22,20 @@ const router = createBrowserRouter([
             Component: DashboardPage,
           },
           {
-            path: "/orders",
-            Component: OrdersPage,
+            path: "/thisevening",
+            Component: ThisEvening,
+          },
+          {
+            path: "/tommorow",
+            Component: Tommorow,
+          },
+          {
+            path: "/meridianchoice",
+            Component: MeridianChoice,
+          },
+          {
+            path: "/advancedfinder",
+            Component: AdvancedFinder,
           },
         ],
       },
