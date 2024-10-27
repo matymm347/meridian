@@ -2,9 +2,9 @@ import { useState, useEffect } from "react";
 import { ThemeProvider, createTheme } from "@mui/material/styles";
 import CssBaseline from "@mui/material/CssBaseline";
 import Box from "@mui/material/Box";
-import AppAppBar from "./components/AppAppBar";
-import Hero from "./components/Hero";
-import Footer from "./components/Footer";
+import AppAppBar from "./AppAppBar";
+import Hero from "./Hero";
+import Footer from "./Footer";
 import "@fontsource/roboto/300.css";
 import "@fontsource/roboto/400.css";
 import "@fontsource/roboto/500.css";
@@ -12,6 +12,7 @@ import "@fontsource/roboto/700.css";
 
 export default function WelcomePage() {
   const [mode, setMode] = useState("dark");
+
   const theme = createTheme({
     palette: { mode },
     typography: {

@@ -1,9 +1,8 @@
 import { createBrowserRouter } from "react-router-dom";
-import WelcomePage from "./WelcomePage";
-// import ObservationLauncher from "./components/ObservationLauncher";
+import WelcomePage from "./components/welcomepage/WelcomePage";
 import App from "./components/App";
-import Layout from "./components/Dashboard";
-import DashboardPage from "./components/DashBoardPage";
+import Layout from "./components/Layout";
+import DashboardPage from "./(dashboard)/thisevening/DashBoardPage";
 import ThisEvening from "./(dashboard)/thisevening/ThisEvening";
 import Tommorow from "./(dashboard)/thisevening/Tommorow";
 import MeridianChoice from "./(dashboard)/thisevening/MeridianChoice";

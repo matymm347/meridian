@@ -9,7 +9,7 @@ export default function Hero() {
   const navigate = useNavigate();
 
   const handleRedirectToLauncher = () => {
-    navigate("/observationlauncher");
+    navigate("/");
   };
 
   return (

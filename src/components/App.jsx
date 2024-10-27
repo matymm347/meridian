@@ -1,3 +1,4 @@
+import MeridianIcon from "./MeridianIcon";
 import DashboardIcon from "@mui/icons-material/Dashboard";
 import NightlightIcon from "@mui/icons-material/Nightlight";
 import NavigateNextIcon from "@mui/icons-material/NavigateNext";
@@ -37,13 +38,12 @@ const NAVIGATION = [
   },
 ];
 
-const BRANDING = {
-  title: "My Toolpad Core App",
-};
-
 export default function App() {
   return (
-    <AppProvider navigation={NAVIGATION} branding={BRANDING}>
+    <AppProvider
+      navigation={NAVIGATION}
+      branding={{ logo: <MeridianIcon />, title: "Meridian" }}
+    >
       <Outlet />
     </AppProvider>
   );
