@@ -6,6 +6,7 @@ import { useEffect, useState } from "react";
 export default function DashboardPage() {
   const [placeName, setPlaceName] = useState("");
   const [placesList, setPlacesList] = useState([]);
+  const [delayActive, setDelayActive] = useState(false);
 
   useEffect(() => {
     if (placeName === "") {
@@ -13,18 +14,31 @@ export default function DashboardPage() {
       return;
     }
 
-    setTimeout(() => {
-      fetch(`http://localhost:3000/geocode?placename=${placeName}`).then(
-        (response) => response.json()
-      ); // some function to set placesList here
+    const timer = setTimeout(() => {
+      if (delayActive === false) {
+        setDelayActive(true);
+        fetch(`http://localhost:3000/geocode?placename=${placeName}`).then(
+          (response) =>
+            response.json().then((data) => {
+              let places = data.features.map((feature) => {
+                return feature.place_name;
+              });
+              setPlacesList(places);
+            })
+        );
+        setDelayActive(false);
+      }
     }, 500);
-  });
+
+    return () => clearTimeout(timer);
+  }, [placeName]);
 
   return (
     <>
       <Box>
         <p>Your location:</p>
         <Autocomplete
+          onInputChange={(event, place) => setPlaceName(place)}
           sx={{ width: 300 }}
           filterOptions={(x) => x} // disable built-in filtering
           disablePortal
