@@ -15,32 +15,42 @@ export default function DashboardPage() {
   function handlePlaceChange(value) {
     const id = placesList.indexOf(value);
     setSelectedPlaceId(id);
-    console.log(id);
     setLongitude(apiData.features[id].geometry.coordinates[0]);
     setLatitude(apiData.features[id].geometry.coordinates[1]);
   }
 
+  function convertLonLat(value) {
+    if (typeof value !== "string") {
+      return parseFloat(value).toFixed(4);
+    } else if (typeof value === "string") {
+      return value;
+    }
+  }
+
   useEffect(() => {
-    if (placeName === "") {
+    if (delayActive === true) {
+      return;
+    }
+
+    if (placeName.length < 4) {
       setPlacesList([]);
       return;
     }
 
-    const timer = setTimeout(() => {
-      if (delayActive === false) {
-        setDelayActive(true);
-        fetch(`http://localhost:3000/geocode?placename=${placeName}`).then(
-          (response) =>
-            response.json().then((data) => {
-              setApiData(data);
-              let places = data.features.map((feature) => {
-                return `${feature.place_name}, ${feature.context[2].text}`;
-              });
-              setPlacesList(places);
-            })
-        );
-        setDelayActive(false);
-      }
+    const timer = setTimeout(async () => {
+      setDelayActive(true);
+      const response = await fetch(
+        `http://localhost:3000/geocode?placename=${placeName}`
+      );
+
+      const data = await response.json();
+      setApiData(data);
+      const places = data.features.map((feature) => {
+        return `${feature.place_name}, ${feature.context[2].text}`;
+      });
+      setPlacesList(places);
+
+      setDelayActive(false);
     }, 500);
 
     return () => clearTimeout(timer);
@@ -60,8 +70,16 @@ export default function DashboardPage() {
           renderInput={(params) => <TextField {...params} label="Location" />}
         />
         <br />
-        <TextField id="longitude" label={longitude} variant="filled" />
-        <TextField id="latitude" label={latitude} variant="filled" />
+        <TextField
+          id="longitude"
+          label={convertLonLat(longitude)}
+          variant="filled"
+        />
+        <TextField
+          id="latitude"
+          label={convertLonLat(latitude)}
+          variant="filled"
+        />
 
         <p>Observation hours:</p>
         <HoursSlider />
