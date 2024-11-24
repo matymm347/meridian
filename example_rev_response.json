@@ -1,0 +1,540 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "properties": {
+        "ref": "osm:r6374670",
+        "country_code": "pl",
+        "kind": "admin_area"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [17.0025715604424, 51.0003147667193]
+      },
+      "bbox": [
+        17.0025715604424, 51.0003147667193, 17.0025715604424, 51.0003147667193
+      ],
+      "center": [17.0025715604424, 51.0003147667193],
+      "place_name": "Szukalice 48b, 55-020 Szukalice, Polska",
+      "place_type": ["address"],
+      "relevance": 1,
+      "id": "address.17186907",
+      "text": "Szukalice",
+      "context": [
+        {
+          "ref": "osm:n11004334558",
+          "country_code": "pl",
+          "id": "postal_code.1429203",
+          "text": "55-020"
+        },
+        {
+          "ref": "osm:r6374670",
+          "country_code": "pl",
+          "id": "municipal_district.33448",
+          "text": "Szukalice",
+          "kind": "admin_area"
+        },
+        {
+          "ref": "osm:r3049637",
+          "country_code": "pl",
+          "id": "municipality.101626",
+          "text": "gmina Żórawina",
+          "wikidata": "Q1908693",
+          "kind": "admin_area"
+        },
+        {
+          "ref": "osm:r451517",
+          "country_code": "pl",
+          "id": "county.993",
+          "text": "powiat wrocławski",
+          "wikidata": "Q715974",
+          "kind": "admin_area"
+        },
+        {
+          "ref": "osm:r224457",
+          "country_code": "pl",
+          "id": "region.200",
+          "text": "województwo dolnośląskie",
+          "wikidata": "Q54150",
+          "kind": "admin_area"
+        },
+        {
+          "ref": "osm:r14735153",
+          "country_code": "pl",
+          "id": "major_landform.5303541",
+          "text": "Oporówka",
+          "categories": ["stream"],
+          "osm:tags": {
+            "waterway": "stream",
+            "destination": "Ślęza",
+            "type": "waterway",
+            "url": "https://eshp.ijp.pan.pl/search/results/233011"
+          }
+        },
+        {
+          "ref": "osm:r49715",
+          "country_code": "pl",
+          "id": "country.42",
+          "text": "Polska",
+          "wikidata": "Q36",
+          "kind": "admin_area"
+        },
+        {
+          "ref": "osm:n25871341",
+          "country_code": "",
+          "id": "continental_marine.1",
+          "text": "Europe",
+          "wikidata": "Q46",
+          "categories": ["continent"],
+          "osm:tags": {
+            "population": "739165030",
+            "place": "continent",
+            "wikipedia": "eo:Eŭropo",
+            "sqkm": "10180000"
+          }
+        }
+      ],
+      "address": "48b"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "ref": "osm:n11004334558",
+        "country_code": "pl"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [17.0653604405214, 50.980467793863]
+      },
+      "bbox": [
+        16.9495221599937, 50.9082336736828, 17.1539514139295, 51.0231899143534
+      ],
+      "center": [17.0653604405214, 50.980467793863],
+      "place_name": "55-020, Polska",
+      "place_type": ["postal_code"],
+      "relevance": 1,
+      "id": "postal_code.1429203",
+      "text": "55-020",
+      "context": [
+        {
+          "ref": "osm:r6374670",
+          "country_code": "pl",
+          "id": "municipal_district.33448",
+          "text": "Szukalice",
+          "kind": "admin_area"
+        },
+        {
+          "ref": "osm:r3049637",
+          "country_code": "pl",
+          "id": "municipality.101626",
+          "text": "gmina Żórawina",
+          "wikidata": "Q1908693",
+          "kind": "admin_area"
+        },
+        {
+          "ref": "osm:r451517",
+          "country_code": "pl",
+          "id": "county.993",
+          "text": "powiat wrocławski",
+          "wikidata": "Q715974",
+          "kind": "admin_area"
+        },
+        {
+          "ref": "osm:r224457",
+          "country_code": "pl",
+          "id": "region.200",
+          "text": "województwo dolnośląskie",
+          "wikidata": "Q54150",
+          "kind": "admin_area"
+        },
+        {
+          "ref": "osm:r14735153",
+          "country_code": "pl",
+          "id": "major_landform.5303541",
+          "text": "Oporówka",
+          "categories": ["stream"],
+          "osm:tags": {
+            "waterway": "stream",
+            "destination": "Ślęza",
+            "type": "waterway",
+            "url": "https://eshp.ijp.pan.pl/search/results/233011"
+          }
+        },
+        {
+          "ref": "osm:r49715",
+          "country_code": "pl",
+          "id": "country.42",
+          "text": "Polska",
+          "wikidata": "Q36",
+          "kind": "admin_area"
+        },
+        {
+          "ref": "osm:n25871341",
+          "country_code": "",
+          "id": "continental_marine.1",
+          "text": "Europe",
+          "wikidata": "Q46",
+          "categories": ["continent"],
+          "osm:tags": {
+            "population": "739165030",
+            "place": "continent",
+            "wikipedia": "eo:Eŭropo",
+            "sqkm": "10180000"
+          }
+        }
+      ]
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "ref": "osm:r6374670",
+        "country_code": "pl",
+        "kind": "admin_area"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [17.0047853887081, 50.9982467618547]
+      },
+      "bbox": [
+        16.9930198788643, 50.9878903702788, 17.012259028852, 51.0118247860173
+      ],
+      "center": [17.0047853887081, 50.9982467618547],
+      "place_name": "Szukalice, Polska",
+      "place_type": ["municipal_district"],
+      "relevance": 1,
+      "id": "municipal_district.33448",
+      "text": "Szukalice",
+      "context": [
+        {
+          "ref": "osm:r3049637",
+          "country_code": "pl",
+          "id": "municipality.101626",
+          "text": "gmina Żórawina",
+          "wikidata": "Q1908693",
+          "kind": "admin_area"
+        },
+        {
+          "ref": "osm:r451517",
+          "country_code": "pl",
+          "id": "county.993",
+          "text": "powiat wrocławski",
+          "wikidata": "Q715974",
+          "kind": "admin_area"
+        },
+        {
+          "ref": "osm:r224457",
+          "country_code": "pl",
+          "id": "region.200",
+          "text": "województwo dolnośląskie",
+          "wikidata": "Q54150",
+          "kind": "admin_area"
+        },
+        {
+          "ref": "osm:r14735153",
+          "country_code": "pl",
+          "id": "major_landform.5303541",
+          "text": "Oporówka",
+          "categories": ["stream"],
+          "osm:tags": {
+            "waterway": "stream",
+            "destination": "Ślęza",
+            "type": "waterway",
+            "url": "https://eshp.ijp.pan.pl/search/results/233011"
+          }
+        },
+        {
+          "ref": "osm:r49715",
+          "country_code": "pl",
+          "id": "country.42",
+          "text": "Polska",
+          "wikidata": "Q36",
+          "kind": "admin_area"
+        },
+        {
+          "ref": "osm:n25871341",
+          "country_code": "",
+          "id": "continental_marine.1",
+          "text": "Europe",
+          "wikidata": "Q46",
+          "categories": ["continent"],
+          "osm:tags": {
+            "population": "739165030",
+            "place": "continent",
+            "wikipedia": "eo:Eŭropo",
+            "sqkm": "10180000"
+          }
+        }
+      ]
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "ref": "osm:r3049637",
+        "country_code": "pl",
+        "wikidata": "Q1908693",
+        "kind": "admin_area"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [17.0409455895424, 50.9800905301684]
+      },
+      "bbox": [
+        16.9358978793025, 50.8999986146103, 17.1631242334843, 51.0348214986632
+      ],
+      "center": [17.0409455895424, 50.9800905301684],
+      "place_name": "gmina Żórawina, Polska",
+      "place_type": ["municipality"],
+      "relevance": 1,
+      "id": "municipality.101626",
+      "text": "gmina Żórawina",
+      "context": [
+        {
+          "ref": "osm:r451517",
+          "country_code": "pl",
+          "id": "county.993",
+          "text": "powiat wrocławski",
+          "wikidata": "Q715974",
+          "kind": "admin_area"
+        },
+        {
+          "ref": "osm:r224457",
+          "country_code": "pl",
+          "id": "region.200",
+          "text": "województwo dolnośląskie",
+          "wikidata": "Q54150",
+          "kind": "admin_area"
+        },
+        {
+          "ref": "osm:r14735153",
+          "country_code": "pl",
+          "id": "major_landform.5303541",
+          "text": "Oporówka",
+          "categories": ["stream"],
+          "osm:tags": {
+            "waterway": "stream",
+            "destination": "Ślęza",
+            "type": "waterway",
+            "url": "https://eshp.ijp.pan.pl/search/results/233011"
+          }
+        },
+        {
+          "ref": "osm:r49715",
+          "country_code": "pl",
+          "id": "country.42",
+          "text": "Polska",
+          "wikidata": "Q36",
+          "kind": "admin_area"
+        },
+        {
+          "ref": "osm:n25871341",
+          "country_code": "",
+          "id": "continental_marine.1",
+          "text": "Europe",
+          "wikidata": "Q46",
+          "categories": ["continent"],
+          "osm:tags": {
+            "population": "739165030",
+            "place": "continent",
+            "wikipedia": "eo:Eŭropo",
+            "sqkm": "10180000"
+          }
+        }
+      ]
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "ref": "osm:r451517",
+        "country_code": "pl",
+        "wikidata": "Q715974",
+        "kind": "admin_area"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [17.0326686277986, 51.1089777963737]
+      },
+      "bbox": [
+        16.5660923346877, 50.809662561294, 17.3759773001075, 51.2763709306269
+      ],
+      "center": [17.0326686277986, 51.1089777963737],
+      "place_name": "powiat wrocławski, Polska",
+      "place_type": ["county"],
+      "relevance": 1,
+      "id": "county.993",
+      "text": "powiat wrocławski",
+      "context": [
+        {
+          "ref": "osm:r224457",
+          "country_code": "pl",
+          "id": "region.200",
+          "text": "województwo dolnośląskie",
+          "wikidata": "Q54150",
+          "kind": "admin_area"
+        },
+        {
+          "ref": "osm:r14735153",
+          "country_code": "pl",
+          "id": "major_landform.5303541",
+          "text": "Oporówka",
+          "categories": ["stream"],
+          "osm:tags": {
+            "waterway": "stream",
+            "destination": "Ślęza",
+            "type": "waterway",
+            "url": "https://eshp.ijp.pan.pl/search/results/233011"
+          }
+        },
+        {
+          "ref": "osm:r49715",
+          "country_code": "pl",
+          "id": "country.42",
+          "text": "Polska",
+          "wikidata": "Q36",
+          "kind": "admin_area"
+        },
+        {
+          "ref": "osm:n25871341",
+          "country_code": "",
+          "id": "continental_marine.1",
+          "text": "Europe",
+          "wikidata": "Q46",
+          "categories": ["continent"],
+          "osm:tags": {
+            "population": "739165030",
+            "place": "continent",
+            "wikipedia": "eo:Eŭropo",
+            "sqkm": "10180000"
+          }
+        }
+      ]
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "ref": "osm:r224457",
+        "country_code": "pl",
+        "wikidata": "Q54150",
+        "kind": "admin_area"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [17.0326686277986, 51.1089777963737]
+      },
+      "bbox": [
+        14.817374534905, 50.0963336240255, 17.7952689304948, 51.8047538695513
+      ],
+      "center": [17.0326686277986, 51.1089777963737],
+      "place_name": "województwo dolnośląskie, Polska",
+      "place_type": ["region"],
+      "relevance": 1,
+      "id": "region.200",
+      "text": "województwo dolnośląskie",
+      "context": [
+        {
+          "ref": "osm:r14735153",
+          "country_code": "pl",
+          "id": "major_landform.5303541",
+          "text": "Oporówka",
+          "categories": ["stream"],
+          "osm:tags": {
+            "waterway": "stream",
+            "destination": "Ślęza",
+            "type": "waterway",
+            "url": "https://eshp.ijp.pan.pl/search/results/233011"
+          }
+        },
+        {
+          "ref": "osm:r49715",
+          "country_code": "pl",
+          "id": "country.42",
+          "text": "Polska",
+          "wikidata": "Q36",
+          "kind": "admin_area"
+        },
+        {
+          "ref": "osm:n25871341",
+          "country_code": "",
+          "id": "continental_marine.1",
+          "text": "Europe",
+          "wikidata": "Q46",
+          "categories": ["continent"],
+          "osm:tags": {
+            "population": "739165030",
+            "place": "continent",
+            "wikipedia": "eo:Eŭropo",
+            "sqkm": "10180000"
+          }
+        }
+      ]
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "ref": "osm:r49715",
+        "country_code": "pl",
+        "wikidata": "Q36",
+        "kind": "admin_area"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [21.0067247226834, 52.2319582667773]
+      },
+      "bbox": [
+        14.0696386992931, 49.002046933987, 24.1457829996944, 55.0360500687129
+      ],
+      "center": [21.0067247226834, 52.2319582667773],
+      "place_name": "Polska",
+      "place_type": ["country"],
+      "relevance": 1,
+      "id": "country.42",
+      "text": "Polska",
+      "context": [
+        {
+          "ref": "osm:n25871341",
+          "country_code": "",
+          "id": "continental_marine.1",
+          "text": "Europe",
+          "wikidata": "Q46",
+          "categories": ["continent"],
+          "osm:tags": {
+            "population": "739165030",
+            "place": "continent",
+            "wikipedia": "eo:Eŭropo",
+            "sqkm": "10180000"
+          }
+        }
+      ]
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "ref": "osm:n25871341",
+        "country_code": "",
+        "wikidata": "Q46",
+        "categories": ["continent"],
+        "osm:tags": {
+          "population": "739165030",
+          "place": "continent",
+          "wikipedia": "eo:Eŭropo",
+          "sqkm": "10180000"
+        }
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [28.250997536245, 55.8505286303011]
+      },
+      "bbox": [
+        -31.289030834396, 34.9305490564742, 68.9313603109264, 81.8519231504018
+      ],
+      "center": [28.250997536245, 55.8505286303011],
+      "place_name": "Europe",
+      "place_type": ["continental_marine"],
+      "relevance": 1,
+      "id": "continental_marine.1",
+      "text": "Europe"
+    }
+  ],
+  "query": [17, 51],
+  "attribution": "\u003Ca href=\"https://www.maptiler.com/copyright/\" target=\"_blank\"\u003E&copy; MapTiler\u003C/a\u003E \u003Ca href=\"https://www.openstreetmap.org/copyright\" target=\"_blank\"\u003E&copy; OpenStreetMap contributors\u003C/a\u003E"
+}

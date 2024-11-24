@@ -1,4 +1,5 @@
-import { Autocomplete, Box } from "@mui/material";
+import { Autocomplete, Box, IconButton } from "@mui/material";
+import MyLocationIcon from "@mui/icons-material/MyLocation";
 import TextField from "@mui/material/TextField";
 import HoursSlider from "../../components/HoursSlider";
 import { useEffect, useState } from "react";
@@ -7,10 +8,55 @@ export default function DashboardPage() {
   const [apiData, setApiData] = useState({});
   const [placeName, setPlaceName] = useState("");
   const [selectedPlaceId, setSelectedPlaceId] = useState(null);
-  const [longitude, setLongitude] = useState("Longitude");
   const [latitude, setLatitude] = useState("Latitude");
+  const [longitude, setLongitude] = useState("Longitude");
   const [placesList, setPlacesList] = useState([]);
   const [delayActive, setDelayActive] = useState(false);
+
+  async function handleGeolocationButton() {
+    if (!("geolocation" in navigator)) {
+      return;
+    }
+
+    navigator.geolocation.getCurrentPosition(
+      async (position) => {
+        const browserLat = position.coords.latitude;
+        const browserLon = position.coords.longitude;
+
+        setLatitude(browserLat);
+        setLongitude(browserLon);
+
+        const response = await fetch(
+          `http://localhost:3000/revgeocode?lat=${browserLat}&lon=${browserLon}`
+        );
+        const data = await response.json();
+
+        setApiData(data);
+        setPlaceName(data.features[0].context[1].text);
+      },
+      (error) => {
+        switch (error.code) {
+          case error.PERMISSION_DENIED:
+            console.error("User denied the request for Geolocation.");
+            break;
+          case error.POSITION_UNAVAILABLE:
+            console.error("Location information is unavailable.");
+            break;
+          case error.TIMEOUT:
+            console.error("The request to get user location timed out.");
+            break;
+          default:
+            console.error("An unknown error occurred.");
+            break;
+        }
+      },
+      {
+        enableHighAccuracy: true,
+        timeout: 10000,
+        maximumAge: 0,
+      }
+    );
+  }
 
   function handlePlaceChange(value) {
     const id = placesList.indexOf(value);
@@ -37,6 +83,10 @@ export default function DashboardPage() {
       return;
     }
 
+    // if (UseBrowserLocation === true) {
+    //   return;
+    // }
+
     const timer = setTimeout(async () => {
       setDelayActive(true);
       const response = await fetch(
@@ -60,15 +110,27 @@ export default function DashboardPage() {
     <>
       <Box>
         <p>Your location:</p>
-        <Autocomplete
-          onChange={(event, value) => handlePlaceChange(value)}
-          onInputChange={(event, place) => setPlaceName(place)}
-          sx={{ width: 600 }}
-          filterOptions={(x) => x} // disable built-in filtering
-          disablePortal
-          options={placesList}
-          renderInput={(params) => <TextField {...params} label="Location" />}
-        />
+        <Box sx={{ display: "flex" }}>
+          <Autocomplete
+            onChange={(event, value) => handlePlaceChange(value)}
+            onInputChange={(event, place) => setPlaceName(place)}
+            sx={{ width: 600 }}
+            filterOptions={(x) => x} // disable built-in filtering
+            disablePortal
+            options={placesList}
+            renderInput={(params) => <TextField {...params} label="Location" />}
+            value={placeName}
+          />
+
+          <IconButton
+            sx={{ width: 40, height: 40, alignSelf: "center" }}
+            aria-label="locate me"
+            onClick={handleGeolocationButton}
+          >
+            <MyLocationIcon />
+          </IconButton>
+        </Box>
+
         <br />
         <TextField
           id="longitude"
