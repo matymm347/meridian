@@ -12,6 +12,7 @@ export default function DashboardPage() {
   const [longitude, setLongitude] = useState("Longitude");
   const [placesList, setPlacesList] = useState([]);
   const [delayActive, setDelayActive] = useState(false);
+  const [noOptionsText, setNoOptionsText] = useState("No options");
 
   async function handleGeolocationButton() {
     if (!("geolocation" in navigator)) {
@@ -61,8 +62,10 @@ export default function DashboardPage() {
   function handlePlaceChange(value) {
     const id = placesList.indexOf(value);
     setSelectedPlaceId(id);
-    setLongitude(apiData.features[id].geometry.coordinates[0]);
-    setLatitude(apiData.features[id].geometry.coordinates[1]);
+    if (apiData.features[id].geometry) {
+      setLongitude(apiData.features[id].geometry.coordinates[0]);
+      setLatitude(apiData.features[id].geometry.coordinates[1]);
+    }
   }
 
   function convertLonLat(value) {
@@ -83,22 +86,28 @@ export default function DashboardPage() {
       return;
     }
 
-    // if (UseBrowserLocation === true) {
-    //   return;
-    // }
-
     const timer = setTimeout(async () => {
       setDelayActive(true);
-      const response = await fetch(
-        `http://localhost:3000/geocode?placename=${placeName}`
-      );
+      setNoOptionsText("No options");
 
-      const data = await response.json();
-      setApiData(data);
-      const places = data.features.map((feature) => {
-        return `${feature.place_name}, ${feature.context[2].text}`;
-      });
-      setPlacesList(places);
+      // clear out options list in case any error occur during fetch to not confuse user
+      setPlacesList([]);
+
+      try {
+        const response = await fetch(
+          `http://localhost:3000/geocode?placename=${placeName}`
+        );
+
+        const data = await response.json();
+        setApiData(data);
+        const places = data.features.map((feature) => {
+          return `${feature.place_name}, ${feature.context[2].text}`;
+        });
+        setPlacesList(places);
+      } catch (error) {
+        console.log("Error during fetch", error);
+        setNoOptionsText("Connection error");
+      }
 
       setDelayActive(false);
     }, 500);
@@ -120,6 +129,8 @@ export default function DashboardPage() {
             options={placesList}
             renderInput={(params) => <TextField {...params} label="Location" />}
             value={placeName}
+            loading={delayActive}
+            noOptionsText={noOptionsText}
           />
 
           <IconButton
