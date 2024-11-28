@@ -3,6 +3,7 @@ import MyLocationIcon from "@mui/icons-material/MyLocation";
 import TextField from "@mui/material/TextField";
 import HoursSlider from "../../components/HoursSlider";
 import { useEffect, useState } from "react";
+import * as maptilerClient from "@maptiler/client";
 
 export default function DashboardPage() {
   const [apiData, setApiData] = useState({});
@@ -13,6 +14,8 @@ export default function DashboardPage() {
   const [placesList, setPlacesList] = useState([]);
   const [delayActive, setDelayActive] = useState(false);
   const [noOptionsText, setNoOptionsText] = useState("No options");
+
+  maptilerClient.config.apiKey = import.meta.env.VITE_MAP_TILER_API_KEY;
 
   async function handleGeolocationButton() {
     if (!("geolocation" in navigator)) {
@@ -27,10 +30,10 @@ export default function DashboardPage() {
         setLatitude(browserLat);
         setLongitude(browserLon);
 
-        const response = await fetch(
-          `http://localhost:3000/revgeocode?lat=${browserLat}&lon=${browserLon}`
-        );
-        const data = await response.json();
+        const data = await maptilerClient.geocoding.reverse([
+          browserLon,
+          browserLat,
+        ]);
 
         setApiData(data);
         setPlaceName(data.features[0].context[1].text);
@@ -94,11 +97,8 @@ export default function DashboardPage() {
       setPlacesList([]);
 
       try {
-        const response = await fetch(
-          `http://localhost:3000/geocode?placename=${placeName}`
-        );
+        const data = await maptilerClient.geocoding.forward(placeName);
 
-        const data = await response.json();
         setApiData(data);
         const places = data.features.map((feature) => {
           return `${feature.place_name}, ${feature.context[2].text}`;
