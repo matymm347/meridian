@@ -1,5 +1,6 @@
-import { Autocomplete, Box, IconButton } from "@mui/material";
+import { Autocomplete, Box, Button, IconButton } from "@mui/material";
 import MyLocationIcon from "@mui/icons-material/MyLocation";
+import MapIcon from "@mui/icons-material/Map";
 import TextField from "@mui/material/TextField";
 import MapView from "../../components/MapView";
 import HoursSlider from "../../components/HoursSlider";
@@ -15,6 +16,7 @@ export default function DashboardPage() {
   const [placesList, setPlacesList] = useState([]);
   const [delayActive, setDelayActive] = useState(false);
   const [noOptionsText, setNoOptionsText] = useState("No options");
+  const [mapWindowOpened, setMapWindowOpened] = useState(false);
 
   maptilerClient.config.apiKey = import.meta.env.VITE_MAP_TILER_API_KEY;
 
@@ -61,6 +63,14 @@ export default function DashboardPage() {
         maximumAge: 0,
       }
     );
+  }
+
+  function handleMapButton() {
+    setMapWindowOpened(true);
+  }
+
+  function handleMapClose() {
+    setMapWindowOpened(false);
   }
 
   function handlePlaceChange(value) {
@@ -128,7 +138,9 @@ export default function DashboardPage() {
             filterOptions={(x) => x} // disable built-in filtering
             disablePortal
             options={placesList}
-            renderInput={(params) => <TextField {...params} label="Location" />}
+            renderInput={(params) => (
+              <TextField {...params} label="Search location" />
+            )}
             value={placeName}
             loading={delayActive}
             noOptionsText={noOptionsText}
@@ -142,7 +154,17 @@ export default function DashboardPage() {
             <MyLocationIcon />
           </IconButton>
         </Box>
-
+        <br />
+        <Button
+          sx={{ alignSelf: "center" }}
+          variant="outlined"
+          aria-label="open map"
+          onClick={handleMapButton}
+        >
+          Select on map
+          <MapIcon sx={{ marginLeft: "10px" }} />
+        </Button>
+        <br />
         <br />
         <TextField
           id="longitude"
@@ -154,16 +176,14 @@ export default function DashboardPage() {
           label={convertLonLat(latitude)}
           variant="filled"
         />
-        <Box
-          sx={{
-            width: "600px",
-            height: "400px",
-            position: "relative",
-            marginBlock: "20px",
-          }}
-        >
-          <MapView lon={16.62662018} lat={49.2125578} />
-        </Box>
+        <br />
+        <MapView
+          lon={longitude === "Longitude" ? 17.0385 : longitude}
+          lat={latitude === "Latitude" ? 51.1079 : latitude}
+          opened={mapWindowOpened}
+          onClose={handleMapClose}
+        />
+        <br />
         <p>Observation hours:</p>
         <HoursSlider />
       </Box>
