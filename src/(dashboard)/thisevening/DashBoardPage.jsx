@@ -1,6 +1,7 @@
 import { Autocomplete, Box, IconButton } from "@mui/material";
 import MyLocationIcon from "@mui/icons-material/MyLocation";
 import TextField from "@mui/material/TextField";
+import MapView from "../../components/MapView";
 import HoursSlider from "../../components/HoursSlider";
 import { useEffect, useState } from "react";
 import * as maptilerClient from "@maptiler/client";
@@ -153,7 +154,16 @@ export default function DashboardPage() {
           label={convertLonLat(latitude)}
           variant="filled"
         />
-
+        <Box
+          sx={{
+            width: "600px",
+            height: "400px",
+            position: "relative",
+            marginBlock: "20px",
+          }}
+        >
+          <MapView lon={16.62662018} lat={49.2125578} />
+        </Box>
         <p>Observation hours:</p>
         <HoursSlider />
       </Box>
