@@ -20,6 +20,16 @@ export default function DashboardPage() {
 
   maptilerClient.config.apiKey = import.meta.env.VITE_MAP_TILER_API_KEY;
 
+  async function updateCoordinates(lon, lat) {
+    setLatitude(lat);
+    setLongitude(lon);
+
+    const data = await maptilerClient.geocoding.reverse([lon, lat]);
+
+    setApiData(data);
+    setPlaceName(data.features[0].context[1].text);
+  }
+
   async function handleGeolocationButton() {
     if (!("geolocation" in navigator)) {
       return;
@@ -30,16 +40,7 @@ export default function DashboardPage() {
         const browserLat = position.coords.latitude;
         const browserLon = position.coords.longitude;
 
-        setLatitude(browserLat);
-        setLongitude(browserLon);
-
-        const data = await maptilerClient.geocoding.reverse([
-          browserLon,
-          browserLat,
-        ]);
-
-        setApiData(data);
-        setPlaceName(data.features[0].context[1].text);
+        updateCoordinates(browserLon, browserLat);
       },
       (error) => {
         switch (error.code) {
@@ -76,7 +77,7 @@ export default function DashboardPage() {
   function handlePlaceChange(value) {
     const id = placesList.indexOf(value);
     setSelectedPlaceId(id);
-    if (apiData.features[id].geometry) {
+    if (apiData.features[id]) {
       setLongitude(apiData.features[id].geometry.coordinates[0]);
       setLatitude(apiData.features[id].geometry.coordinates[1]);
     }
@@ -182,6 +183,7 @@ export default function DashboardPage() {
           lat={latitude === "Latitude" ? 51.1079 : latitude}
           opened={mapWindowOpened}
           onClose={handleMapClose}
+          updateCoordinates={updateCoordinates}
         />
         <br />
         <p>Observation hours:</p>

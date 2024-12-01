@@ -2,30 +2,37 @@ import "@maptiler/sdk/dist/maptiler-sdk.css";
 import Dialog from "@mui/material/Dialog";
 import DialogTitle from "@mui/material/DialogTitle";
 import * as maptilersdk from "@maptiler/sdk";
-import { useEffect, useState } from "react";
+import { useEffect, useRef } from "react";
 
 maptilersdk.config.apiKey = import.meta.env.VITE_MAP_TILER_API_KEY;
 
-let map = null;
-
-function Map({ lon, lat, opened }) {
+function Map({ lon, lat, opened, updateCoordinates }) {
   useEffect(() => {
     if (!opened) return;
 
-    map = new maptilersdk.Map({
+    const map = new maptilersdk.Map({
       container: "map-view",
-      style: maptilersdk.MapStyle.STREETS,
+      style: maptilersdk.MapStyle.BASIC,
       center: [lon, lat],
       zoom: 10,
     });
 
-    return () => {
-      map.remove();
-    };
+    let marker = new maptilersdk.Marker().setLngLat([lon, lat]).addTo(map);
+
+    map.on("click", (e) => {
+      marker.setLngLat(e.lngLat);
+      updateCoordinates(e.lngLat.lng, e.lngLat.lat);
+    });
   }, []);
 }
 
-export default function MapView({ lon, lat, opened, onClose }) {
+export default function MapView({
+  lon,
+  lat,
+  opened,
+  onClose,
+  updateCoordinates,
+}) {
   return (
     <>
       <Dialog open={opened} onClose={onClose} maxWidth={false}>
@@ -50,7 +57,12 @@ export default function MapView({ lon, lat, opened, onClose }) {
             }}
           ></div>
         </div>
-        <Map lon={lon} lat={lat} opened={opened} />
+        <Map
+          lon={lon}
+          lat={lat}
+          opened={opened}
+          updateCoordinates={updateCoordinates}
+        />
       </Dialog>
     </>
   );
