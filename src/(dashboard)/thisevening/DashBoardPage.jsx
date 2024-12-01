@@ -154,18 +154,16 @@ export default function DashboardPage() {
           >
             <MyLocationIcon />
           </IconButton>
+          <Button
+            sx={{ alignSelf: "center" }}
+            variant="outlined"
+            aria-label="open map"
+            onClick={handleMapButton}
+          >
+            Select on map
+            <MapIcon sx={{ marginLeft: "10px" }} />
+          </Button>
         </Box>
-        <br />
-        <Button
-          sx={{ alignSelf: "center" }}
-          variant="outlined"
-          aria-label="open map"
-          onClick={handleMapButton}
-        >
-          Select on map
-          <MapIcon sx={{ marginLeft: "10px" }} />
-        </Button>
-        <br />
         <br />
         <TextField
           id="longitude"
