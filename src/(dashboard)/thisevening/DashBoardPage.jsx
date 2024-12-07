@@ -131,29 +131,32 @@ export default function DashboardPage() {
     <>
       <Box>
         <p>Your location:</p>
-        <Box sx={{ display: "flex" }}>
-          <Autocomplete
-            onChange={(event, value) => handlePlaceChange(value)}
-            onInputChange={(event, place) => setPlaceName(place)}
-            sx={{ width: 600 }}
-            filterOptions={(x) => x} // disable built-in filtering
-            disablePortal
-            options={placesList}
-            renderInput={(params) => (
-              <TextField {...params} label="Search location" />
-            )}
-            value={placeName}
-            loading={delayActive}
-            noOptionsText={noOptionsText}
-          />
+        <Box sx={{ display: "flex", flexWrap: "wrap" }}>
+          <Box sx={{ display: "flex", flexGrow: 1, maxWidth: 600 }}>
+            <Autocomplete
+              onChange={(event, value) => handlePlaceChange(value)}
+              fullWidth={true}
+              onInputChange={(event, place) => setPlaceName(place)}
+              filterOptions={(x) => x} // disable built-in filtering
+              disablePortal
+              options={placesList}
+              renderInput={(params) => (
+                <TextField {...params} label="Search location" />
+              )}
+              value={placeName}
+              loading={delayActive}
+              noOptionsText={noOptionsText}
+            />
 
-          <IconButton
-            sx={{ width: 40, height: 40, alignSelf: "center" }}
-            aria-label="locate me"
-            onClick={handleGeolocationButton}
-          >
-            <MyLocationIcon />
-          </IconButton>
+            <IconButton
+              sx={{ width: 40, height: 40, alignSelf: "center" }}
+              aria-label="locate me"
+              onClick={handleGeolocationButton}
+            >
+              <MyLocationIcon />
+            </IconButton>
+          </Box>
+
           <Button
             sx={{ alignSelf: "center" }}
             variant="outlined"
