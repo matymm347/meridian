@@ -180,15 +180,19 @@ export default function DashboardPage() {
         />
         <br />
         <MapView
-          lon={longitude === "Longitude" ? 17.0385 : longitude}
-          lat={latitude === "Latitude" ? 51.1079 : latitude}
+          lon={longitude === null ? 17.0385 : longitude}
+          lat={latitude === null ? 51.1079 : latitude}
           opened={mapWindowOpened}
           onClose={handleMapClose}
           updateCoordinates={updateCoordinates}
         />
         <br />
         <p>Observation hours:</p>
-        <HoursSlider latitude={51.11} longitude={17.04} />
+        <HoursSlider
+          latitude={51.11}
+          longitude={17.04}
+          inactive={longitude === null || latitude === null ? true : false}
+        />
       </Box>
     </>
   );

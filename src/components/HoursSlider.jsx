@@ -11,8 +11,9 @@ import {
 } from "astronomy-engine";
 import { Dashboard } from "@mui/icons-material";
 
-export default function HoursSlider({ latitude, longitude, height }) {
+export default function HoursSlider({ latitude, longitude, height, inactive }) {
   const [value, setValue] = useState([500, 1000]);
+
   const observer = new Observer(latitude, longitude, 0);
   const time = new Date();
   time.setUTCHours(0, 0, 0, 0);
@@ -27,6 +28,34 @@ export default function HoursSlider({ latitude, longitude, height }) {
   solarMidnight = solarMidnight.toString();
   solarMidnight = solarMidnight.slice(16, 21);
   solarMidnight = timeToMinutes(solarMidnight);
+
+  const eventTimes = calculateTimeBlocks(latitude, longitude, height);
+
+  const activeStyle = {
+    "& .MuiSlider-rail": {
+      background: `radial-gradient(
+      circle, 
+        navy 0%,
+        navy ${eventTimes.astroDusk / 14.4}%,
+        blue ${eventTimes.astroDusk / 14.4}%,
+        blue ${eventTimes.nauticalDusk / 14.4}%,
+        azure ${eventTimes.nauticalDusk / 14.4}%,
+        azure ${eventTimes.civilDusk / 14.4}%,
+        cadetblue ${eventTimes.civilDusk / 14.4}%,
+        cadetblue 100%
+      )`, // Gradient for rail colors
+      opacity: 1, // Ensure the rail is fully opaque
+      height: 20,
+    },
+  };
+
+  const inactiveStyle = {
+    "& .MuiSlider-rail": {
+      background: "grey",
+      opacity: 1, // Ensure the rail is fully opaque
+      height: 20,
+    },
+  };
 
   function calculateTimeBlocks(latitude, longitude) {
     const civilDusk = SearchAltitude(
@@ -105,36 +134,19 @@ export default function HoursSlider({ latitude, longitude, height }) {
     return `${hours}:${minutes}`;
   };
 
-  const eventTimes = calculateTimeBlocks(latitude, longitude, height);
-
   return (
     <>
       <Box sx={{ width: 600 }}>
         <Slider
+          disabled={inactive}
           getAriaLabel={() => "Observation hours"}
           value={value}
           onChange={handleChange}
-          valueLabelDisplay="on"
+          valueLabelDisplay={inactive === false ? "on" : "off"}
           min={0}
           max={1440}
           valueLabelFormat={valueLabelFormat}
-          sx={{
-            "& .MuiSlider-rail": {
-              background: `radial-gradient(
-              circle, 
-                navy 0%,
-                navy ${eventTimes.astroDusk / 14.4}%,
-                blue ${eventTimes.astroDusk / 14.4}%,
-                blue ${eventTimes.nauticalDusk / 14.4}%,
-                azure ${eventTimes.nauticalDusk / 14.4}%,
-                azure ${eventTimes.civilDusk / 14.4}%,
-                cadetblue ${eventTimes.civilDusk / 14.4}%,
-                cadetblue 100%
-              )`, // Gradient for rail colors
-              opacity: 1, // Ensure the rail is fully opaque
-              height: 20,
-            },
-          }}
+          sx={inactive === false ? activeStyle : inactiveStyle}
         />
       </Box>
     </>
