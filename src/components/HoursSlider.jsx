@@ -2,14 +2,67 @@ import PropTypes from "prop-types";
 import Box from "@mui/material/Box";
 import Slider from "@mui/material/Slider";
 import { useState } from "react";
+import { Astronomy } from "astronomy-engine";
 
-export default function HoursSlider({
-  astroMidnight = "01:15",
-  astroDarkLength = "02:30",
-  nauticalDarkLength = "08:15",
-  civilDarkLength = "12:20",
-}) {
+export default function HoursSlider({ latitude, longitude, height }) {
   const [value, setValue] = useState([500, 1000]);
+
+  function calculateTimeBlocks(latitude, longitude, height) {
+    const observer = new Astronomy.Observer(latitude, longitude, 0);
+    const time = new Date();
+    time.setUTCHours(0, 0, 0, 0);
+    const lastMidnightTime = Astronomy.MakeTime(time);
+
+    const civilDusk = Astronomy.SearchAltitude(
+      Astronomy.Body.Sun,
+      observer,
+      -1,
+      lastMidnightTime,
+      1,
+      -6
+    ).date;
+
+    const nauticalDusk = Astronomy.SearchAltitude(
+      Astronomy.Body.Sun,
+      observer,
+      -1,
+      lastMidnightTime,
+      1,
+      -12
+    ).date;
+
+    const astroDusk = Astronomy.SearchAltitude(
+      Astronomy.Body.Sun,
+      observer,
+      -1,
+      lastMidnightTime,
+      1,
+      -18
+    ).date;
+
+    const solarMidnight = Astronomy.SearchHourAngle(
+      Astronomy.Body.Sun,
+      observer,
+      12,
+      lastMidnightTime,
+      1
+    ).time.date;
+
+    const eventsList = [civilDusk, nauticalDusk, astroDusk, solarMidnight];
+    const eventsHours = eventsList.map((event) => {
+      const dateString = event.toString();
+      return dateString.slice(16, 24);
+    });
+
+    const eventTimes = {
+      civilDusk: eventsList[0],
+      nauticalDusk: eventsList[1],
+      astroDusk: eventsList[2],
+      solarMidnight: eventsList[3],
+    };
+
+    return eventTimes;
+  }
 
   const handleChange = (event, newValue) => {
     setValue(newValue);
@@ -36,6 +89,8 @@ export default function HoursSlider({
 
     return `${hours}:${minutes}`;
   };
+
+  const eventTimes = calculateTimeBlocks(latitude, longitude, height);
 
   return (
     <>
