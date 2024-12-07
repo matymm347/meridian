@@ -2,19 +2,35 @@ import PropTypes from "prop-types";
 import Box from "@mui/material/Box";
 import Slider from "@mui/material/Slider";
 import { useState } from "react";
-import { Astronomy } from "astronomy-engine";
+import {
+  SearchAltitude,
+  SearchHourAngle,
+  Body,
+  Observer,
+  MakeTime,
+} from "astronomy-engine";
+import { Dashboard } from "@mui/icons-material";
 
 export default function HoursSlider({ latitude, longitude, height }) {
   const [value, setValue] = useState([500, 1000]);
+  const observer = new Observer(latitude, longitude, 0);
+  const time = new Date();
+  time.setUTCHours(0, 0, 0, 0);
+  const lastMidnightTime = MakeTime(time);
+  let solarMidnight = SearchHourAngle(
+    Body.Sun,
+    observer,
+    12,
+    lastMidnightTime,
+    1
+  ).time.date;
+  solarMidnight = solarMidnight.toString();
+  solarMidnight = solarMidnight.slice(16, 21);
+  solarMidnight = timeToMinutes(solarMidnight);
 
-  function calculateTimeBlocks(latitude, longitude, height) {
-    const observer = new Astronomy.Observer(latitude, longitude, 0);
-    const time = new Date();
-    time.setUTCHours(0, 0, 0, 0);
-    const lastMidnightTime = Astronomy.MakeTime(time);
-
-    const civilDusk = Astronomy.SearchAltitude(
-      Astronomy.Body.Sun,
+  function calculateTimeBlocks(latitude, longitude) {
+    const civilDusk = SearchAltitude(
+      Body.Sun,
       observer,
       -1,
       lastMidnightTime,
@@ -22,8 +38,8 @@ export default function HoursSlider({ latitude, longitude, height }) {
       -6
     ).date;
 
-    const nauticalDusk = Astronomy.SearchAltitude(
-      Astronomy.Body.Sun,
+    const nauticalDusk = SearchAltitude(
+      Body.Sun,
       observer,
       -1,
       lastMidnightTime,
@@ -31,8 +47,8 @@ export default function HoursSlider({ latitude, longitude, height }) {
       -12
     ).date;
 
-    const astroDusk = Astronomy.SearchAltitude(
-      Astronomy.Body.Sun,
+    const astroDusk = SearchAltitude(
+      Body.Sun,
       observer,
       -1,
       lastMidnightTime,
@@ -40,25 +56,19 @@ export default function HoursSlider({ latitude, longitude, height }) {
       -18
     ).date;
 
-    const solarMidnight = Astronomy.SearchHourAngle(
-      Astronomy.Body.Sun,
-      observer,
-      12,
-      lastMidnightTime,
-      1
-    ).time.date;
-
-    const eventsList = [civilDusk, nauticalDusk, astroDusk, solarMidnight];
-    const eventsHours = eventsList.map((event) => {
+    const eventsList = [civilDusk, nauticalDusk, astroDusk];
+    const eventsDiameters = eventsList.map((event) => {
       const dateString = event.toString();
-      return dateString.slice(16, 24);
+      const hourString = timeToMinutes(dateString.slice(16, 21));
+      // HoursSlider need diameter which is twice the radius
+      const eventLength = (solarMidnight - hourString) * 2;
+      return eventLength;
     });
 
     const eventTimes = {
-      civilDusk: eventsList[0],
-      nauticalDusk: eventsList[1],
-      astroDusk: eventsList[2],
-      solarMidnight: eventsList[3],
+      civilDusk: eventsDiameters[0],
+      nauticalDusk: eventsDiameters[1],
+      astroDusk: eventsDiameters[2],
     };
 
     return eventTimes;
@@ -74,17 +84,22 @@ export default function HoursSlider({ latitude, longitude, height }) {
   }
 
   const valueLabelFormat = (value) => {
-    // center on astroMidnight
-    value = value + 720 + timeToMinutes(astroMidnight);
+    // center on solarMidnight
+    value = value + 720 + solarMidnight;
     if (value > 1440) {
       value -= 1440;
     }
 
-    const hours = Math.floor(value / 60);
+    let hours = Math.floor(value / 60);
     let minutes = value % 60;
     // add leading 0
     if (minutes < 10) {
       minutes = `0${minutes}`;
+    }
+
+    // reset counter after midnight
+    if (hours > 24) {
+      hours -= 25;
     }
 
     return `${hours}:${minutes}`;
@@ -108,12 +123,12 @@ export default function HoursSlider({ latitude, longitude, height }) {
               background: `radial-gradient(
               circle, 
                 navy 0%,
-                navy ${timeToMinutes(astroDarkLength) / 14.4}%,
-                blue ${timeToMinutes(astroDarkLength) / 14.4}%,
-                blue ${timeToMinutes(nauticalDarkLength) / 14.4}%,
-                azure ${timeToMinutes(nauticalDarkLength) / 14.4}%,
-                azure ${timeToMinutes(civilDarkLength) / 14.4}%,
-                cadetblue ${timeToMinutes(civilDarkLength) / 14.4}%,
+                navy ${eventTimes.astroDusk / 14.4}%,
+                blue ${eventTimes.astroDusk / 14.4}%,
+                blue ${eventTimes.nauticalDusk / 14.4}%,
+                azure ${eventTimes.nauticalDusk / 14.4}%,
+                azure ${eventTimes.civilDusk / 14.4}%,
+                cadetblue ${eventTimes.civilDusk / 14.4}%,
                 cadetblue 100%
               )`, // Gradient for rail colors
               opacity: 1, // Ensure the rail is fully opaque
@@ -127,8 +142,6 @@ export default function HoursSlider({ latitude, longitude, height }) {
 }
 
 HoursSlider.propTypes = {
-  astroMidnight: PropTypes.string,
-  astroDarkLength: PropTypes.string,
-  nauticalDarkLength: PropTypes.string,
-  civilDarkLength: PropTypes.string,
+  latitude: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+  longitude: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
 };

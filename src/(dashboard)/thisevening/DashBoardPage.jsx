@@ -11,8 +11,8 @@ export default function DashboardPage() {
   const [apiData, setApiData] = useState({});
   const [placeName, setPlaceName] = useState("");
   const [selectedPlaceId, setSelectedPlaceId] = useState(null);
-  const [latitude, setLatitude] = useState("Latitude");
-  const [longitude, setLongitude] = useState("Longitude");
+  const [latitude, setLatitude] = useState(null);
+  const [longitude, setLongitude] = useState(null);
   const [placesList, setPlacesList] = useState([]);
   const [delayActive, setDelayActive] = useState(false);
   const [noOptionsText, setNoOptionsText] = useState("No options");
@@ -170,12 +170,12 @@ export default function DashboardPage() {
         <br />
         <TextField
           id="longitude"
-          label={convertLonLat(longitude)}
+          label={longitude === null ? "Longitude" : convertLonLat(longitude)}
           variant="filled"
         />
         <TextField
           id="latitude"
-          label={convertLonLat(latitude)}
+          label={latitude === null ? "Latitude" : convertLonLat(latitude)}
           variant="filled"
         />
         <br />
@@ -188,7 +188,7 @@ export default function DashboardPage() {
         />
         <br />
         <p>Observation hours:</p>
-        <HoursSlider />
+        <HoursSlider latitude={51.11} longitude={17.04} />
       </Box>
     </>
   );
