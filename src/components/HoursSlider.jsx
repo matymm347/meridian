@@ -2,24 +2,17 @@ import PropTypes from "prop-types";
 import Box from "@mui/material/Box";
 import Slider from "@mui/material/Slider";
 import { useState } from "react";
-import {
-  SearchAltitude,
-  SearchHourAngle,
-  Body,
-  Observer,
-  MakeTime,
-} from "astronomy-engine";
-import { Dashboard } from "@mui/icons-material";
+import * as Astronomy from "astronomy-engine";
 
 export default function HoursSlider({ latitude, longitude, height, inactive }) {
   const [value, setValue] = useState([500, 1000]);
 
-  const observer = new Observer(latitude, longitude, 0);
+  const observer = new Astronomy.Observer(latitude, longitude, 0);
   const time = new Date();
   time.setUTCHours(0, 0, 0, 0);
-  const lastMidnightTime = MakeTime(time);
-  let solarMidnight = SearchHourAngle(
-    Body.Sun,
+  const lastMidnightTime = Astronomy.MakeTime(time);
+  let solarMidnight = Astronomy.SearchHourAngle(
+    Astronomy.Body.Sun,
     observer,
     12,
     lastMidnightTime,
@@ -58,8 +51,8 @@ export default function HoursSlider({ latitude, longitude, height, inactive }) {
   };
 
   function calculateTimeBlocks(latitude, longitude) {
-    const civilDusk = SearchAltitude(
-      Body.Sun,
+    const civilDusk = Astronomy.SearchAltitude(
+      Astronomy.Body.Sun,
       observer,
       -1,
       lastMidnightTime,
@@ -67,8 +60,8 @@ export default function HoursSlider({ latitude, longitude, height, inactive }) {
       -6
     ).date;
 
-    const nauticalDusk = SearchAltitude(
-      Body.Sun,
+    const nauticalDusk = Astronomy.SearchAltitude(
+      Astronomy.Body.Sun,
       observer,
       -1,
       lastMidnightTime,
@@ -76,8 +69,8 @@ export default function HoursSlider({ latitude, longitude, height, inactive }) {
       -12
     ).date;
 
-    const astroDusk = SearchAltitude(
-      Body.Sun,
+    const astroDusk = Astronomy.SearchAltitude(
+      Astronomy.Body.Sun,
       observer,
       -1,
       lastMidnightTime,

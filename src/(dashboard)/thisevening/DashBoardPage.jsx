@@ -4,6 +4,7 @@ import MapIcon from "@mui/icons-material/Map";
 import TextField from "@mui/material/TextField";
 import MapView from "../../components/MapView";
 import HoursSlider from "../../components/HoursSlider";
+import ObjectList from "../../components/ObjectList";
 import { useEffect, useState } from "react";
 import * as maptilerClient from "@maptiler/client";
 
@@ -188,11 +189,12 @@ export default function DashboardPage() {
         />
         <br />
         <p>Observation hours:</p>
-        <HoursSlider
+        {/* <HoursSlider
           latitude={51.11}
           longitude={17.04}
           inactive={longitude === null || latitude === null ? true : false}
-        />
+        /> */}
+        <ObjectList />
       </Box>
     </>
   );
