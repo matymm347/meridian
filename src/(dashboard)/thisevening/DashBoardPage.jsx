@@ -11,15 +11,24 @@ import * as maptilerClient from "@maptiler/client";
 export default function DashboardPage() {
   const [apiData, setApiData] = useState({});
   const [placeName, setPlaceName] = useState("");
-  const [selectedPlaceId, setSelectedPlaceId] = useState(null);
   const [latitude, setLatitude] = useState(null);
   const [longitude, setLongitude] = useState(null);
   const [placesList, setPlacesList] = useState([]);
   const [delayActive, setDelayActive] = useState(false);
   const [noOptionsText, setNoOptionsText] = useState("No options");
   const [mapWindowOpened, setMapWindowOpened] = useState(false);
+  const [startTime, setStartTime] = useState(null);
+  const [endTime, setEndTime] = useState(null);
 
   maptilerClient.config.apiKey = import.meta.env.VITE_MAP_TILER_API_KEY;
+
+  function handleStartTimeUpdate(startTime) {
+    setStartTime(startTime);
+  }
+
+  function handleEndTimeUpdate(endTime) {
+    setEndTime(endTime);
+  }
 
   async function updateCoordinates(lon, lat) {
     setLatitude(lat);
@@ -181,6 +190,7 @@ export default function DashboardPage() {
         />
         <br />
         <MapView
+          // center map on Wroclaw by default
           lon={longitude === null ? 17.0385 : longitude}
           lat={latitude === null ? 51.1079 : latitude}
           opened={mapWindowOpened}
@@ -189,12 +199,23 @@ export default function DashboardPage() {
         />
         <br />
         <p>Observation hours:</p>
-        {/* <HoursSlider
-          latitude={51.11}
-          longitude={17.04}
+        <HoursSlider
+          latitude={latitude}
+          longitude={longitude}
           inactive={longitude === null || latitude === null ? true : false}
-        /> */}
-        <FilteredObjectsTable />
+          handleStartTimeUpdate={handleStartTimeUpdate}
+          handleEndTimeUpdate={handleEndTimeUpdate}
+        />
+        {startTime !== null && endTime !== null && (
+          <>
+            <FilteredObjectsTable
+              latitude={latitude}
+              longitude={longitude}
+              startTime={startTime}
+              endTime={endTime}
+            />
+          </>
+        )}
       </Box>
     </>
   );

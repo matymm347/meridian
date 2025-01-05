@@ -1,11 +1,73 @@
 import PropTypes from "prop-types";
 import Box from "@mui/material/Box";
 import Slider from "@mui/material/Slider";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import * as Astronomy from "astronomy-engine";
 
-export default function HoursSlider({ latitude, longitude, height, inactive }) {
+export default function HoursSlider({
+  latitude,
+  longitude,
+  height,
+  inactive,
+  handleStartTimeUpdate,
+  handleEndTimeUpdate,
+}) {
   const [value, setValue] = useState([500, 1000]);
+  const [timeUpdateDelayActive, setTimeUpdateDelayActive] = useState(false);
+  const [crossingMidnight, setCrossingMidnight] = useState(false);
+
+  useEffect(
+    () => {
+      if (timeUpdateDelayActive === false) {
+        const timer = setTimeout(() => {
+          setTimeUpdateDelayActive(true);
+          const time = new Date();
+
+          if (crossingMidnight) {
+            time.setDate(time.getDate() + 1);
+          }
+
+          if (index === 0) {
+            time.setHours(hours, minutes, 0, 0);
+            handleStartTimeUpdate(time);
+          } else if (index === 1) {
+            time.setHours(hours, minutes, 0, 0);
+            handleEndTimeUpdate(time);
+          }
+          setTimeUpdateDelayActive(false);
+        }, 200);
+
+        return () => clearTimeout(timer);
+      }
+    },
+    [
+      /*some dependency that will trigger the effect*/
+    ]
+  );
+
+  if (inactive) {
+    return (
+      <>
+        <Box sx={{ width: 600 }}>
+          <Slider
+            disabled={true}
+            getAriaLabel={() => "Observation hours"}
+            value={value}
+            valueLabelDisplay={"off"}
+            min={0}
+            max={1440}
+            sx={{
+              "& .MuiSlider-rail": {
+                background: "grey",
+                opacity: 1, // Ensure the rail is fully opaque
+                height: 20,
+              },
+            }}
+          />
+        </Box>
+      </>
+    );
+  }
 
   const observer = new Astronomy.Observer(latitude, longitude, 0);
   const time = new Date();
@@ -37,14 +99,6 @@ export default function HoursSlider({ latitude, longitude, height, inactive }) {
         cadetblue ${eventTimes.civilDusk / 14.4}%,
         cadetblue 100%
       )`, // Gradient for rail colors
-      opacity: 1, // Ensure the rail is fully opaque
-      height: 20,
-    },
-  };
-
-  const inactiveStyle = {
-    "& .MuiSlider-rail": {
-      background: "grey",
       opacity: 1, // Ensure the rail is fully opaque
       height: 20,
     },
@@ -105,7 +159,7 @@ export default function HoursSlider({ latitude, longitude, height, inactive }) {
     return hours * 60 + minutes;
   }
 
-  const valueLabelFormat = (value) => {
+  const valueLabelFormat = (value, index) => {
     // center on solarMidnight
     value = value + 720 + solarMidnight;
     if (value > 1440) {
@@ -120,9 +174,14 @@ export default function HoursSlider({ latitude, longitude, height, inactive }) {
     }
 
     // reset counter after midnight
+    let crossingMidnight = false;
+
     if (hours > 24) {
       hours -= 25;
+      crossingMidnight = true;
     }
+
+    // Some update here to make useEffect work
 
     return `${hours}:${minutes}`;
   };

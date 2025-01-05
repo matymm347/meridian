@@ -9,11 +9,6 @@ import { TableBody } from "@mui/material";
 import wimmerTable from "./wimmerTable";
 import observationFilter from "./observationFilter";
 
-let startTimeTemp = new Date();
-let endTimeTemp = new Date();
-startTimeTemp.setHours(18, 0, 0, 0);
-endTimeTemp.setHours(23, 0, 0, 0);
-
 function ObjectVisibilityLine({
   startTime,
   endTime,
@@ -46,11 +41,11 @@ function ObjectVisibilityLine({
 }
 
 export default function FilteredObjectsTable({
-  latitude = 51.14,
-  longitude = 17.03,
+  latitude,
+  longitude,
   angle = 30,
-  startTime = startTimeTemp,
-  endTime = endTimeTemp,
+  startTime,
+  endTime,
 }) {
   return (
     <>
