@@ -13,37 +13,6 @@ export default function HoursSlider({
   handleEndTimeUpdate,
 }) {
   const [value, setValue] = useState([500, 1000]);
-  const [timeUpdateDelayActive, setTimeUpdateDelayActive] = useState(false);
-  const [crossingMidnight, setCrossingMidnight] = useState(false);
-
-  useEffect(
-    () => {
-      if (timeUpdateDelayActive === false) {
-        const timer = setTimeout(() => {
-          setTimeUpdateDelayActive(true);
-          const time = new Date();
-
-          if (crossingMidnight) {
-            time.setDate(time.getDate() + 1);
-          }
-
-          if (index === 0) {
-            time.setHours(hours, minutes, 0, 0);
-            handleStartTimeUpdate(time);
-          } else if (index === 1) {
-            time.setHours(hours, minutes, 0, 0);
-            handleEndTimeUpdate(time);
-          }
-          setTimeUpdateDelayActive(false);
-        }, 200);
-
-        return () => clearTimeout(timer);
-      }
-    },
-    [
-      /*some dependency that will trigger the effect*/
-    ]
-  );
 
   if (inactive) {
     return (
@@ -174,16 +143,48 @@ export default function HoursSlider({
     }
 
     // reset counter after midnight
-    let crossingMidnight = false;
-
     if (hours > 24) {
       hours -= 25;
-      crossingMidnight = true;
     }
 
-    // Some update here to make useEffect work
-
     return `${hours}:${minutes}`;
+  };
+
+  const handleChangeCommited = (event, value) => {
+    for (let index = 0; index < value.length; index++) {
+      const time = new Date();
+      let newValue = value[index] + 720 + solarMidnight;
+      if (newValue > 1440) {
+        newValue -= 1440;
+      }
+
+      let hours = Math.floor(newValue / 60);
+      let minutes = newValue % 60;
+      // add leading 0
+      if (minutes < 10) {
+        minutes = `0${minutes}`;
+      }
+
+      // reset counter after midnight
+      let crossingMidnight = false;
+
+      if (hours > 24) {
+        hours -= 25;
+        crossingMidnight = true;
+      }
+
+      if (crossingMidnight) {
+        time.setDate(time.getDate() + 1);
+      }
+
+      time.setHours(hours, minutes, 0, 0);
+
+      if (index === 0) {
+        handleStartTimeUpdate(time);
+      } else if (index === 1) {
+        handleEndTimeUpdate(time);
+      }
+    }
   };
 
   return (
@@ -194,6 +195,7 @@ export default function HoursSlider({
           getAriaLabel={() => "Observation hours"}
           value={value}
           onChange={handleChange}
+          onChangeCommitted={handleChangeCommited}
           valueLabelDisplay={inactive === false ? "on" : "off"}
           min={0}
           max={1440}
