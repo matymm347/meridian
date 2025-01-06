@@ -42,18 +42,18 @@ export default function HoursSlider({
   const time = new Date();
   time.setUTCHours(0, 0, 0, 0);
   const lastMidnightTime = Astronomy.MakeTime(time);
-  let solarMidnight = Astronomy.SearchHourAngle(
+  const solarMidnight = Astronomy.SearchHourAngle(
     Astronomy.Body.Sun,
     observer,
     12,
     lastMidnightTime,
     1
   ).time.date;
-  solarMidnight = solarMidnight.toString();
-  solarMidnight = solarMidnight.slice(16, 21);
-  solarMidnight = timeToMinutes(solarMidnight);
+  let sliderMidnight = solarMidnight.toString();
+  sliderMidnight = sliderMidnight.slice(16, 21);
+  sliderMidnight = timeToMinutes(sliderMidnight);
 
-  const eventTimes = calculateTimeBlocks(latitude, longitude, height);
+  const eventTimes = calculateTimeBlocks();
 
   const activeStyle = {
     "& .MuiSlider-rail": {
@@ -73,7 +73,7 @@ export default function HoursSlider({
     },
   };
 
-  function calculateTimeBlocks(latitude, longitude) {
+  function calculateTimeBlocks() {
     const civilDusk = Astronomy.SearchAltitude(
       Astronomy.Body.Sun,
       observer,
@@ -103,10 +103,8 @@ export default function HoursSlider({
 
     const eventsList = [civilDusk, nauticalDusk, astroDusk];
     const eventsDiameters = eventsList.map((event) => {
-      const dateString = event.toString();
-      const hourString = timeToMinutes(dateString.slice(16, 21));
-      // HoursSlider need diameter which is twice the radius
-      const eventLength = (solarMidnight - hourString) * 2;
+      const eventLength =
+        ((solarMidnight.getTime() - event.getTime()) * 2) / (1000 * 60);
       return eventLength;
     });
 
@@ -129,8 +127,8 @@ export default function HoursSlider({
   }
 
   const valueLabelFormat = (value, index) => {
-    // center on solarMidnight
-    value = value + 720 + solarMidnight;
+    // center on sliderMidnight
+    value = value + 720 + sliderMidnight;
     if (value > 1440) {
       value -= 1440;
     }
@@ -153,7 +151,7 @@ export default function HoursSlider({
   const handleChangeCommited = (event, value) => {
     for (let index = 0; index < value.length; index++) {
       const time = new Date();
-      let newValue = value[index] + 720 + solarMidnight;
+      let newValue = value[index] + 720 + sliderMidnight;
       if (newValue > 1440) {
         newValue -= 1440;
       }

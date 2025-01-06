@@ -86,7 +86,6 @@ export default function DashboardPage() {
 
   function handlePlaceChange(value) {
     const id = placesList.indexOf(value);
-    setSelectedPlaceId(id);
     if (apiData.features[id]) {
       setLongitude(apiData.features[id].geometry.coordinates[0]);
       setLatitude(apiData.features[id].geometry.coordinates[1]);
@@ -99,6 +98,14 @@ export default function DashboardPage() {
     } else if (typeof value === "string") {
       return value;
     }
+  }
+
+  function handleLatFieldChange(event) {
+    setLatitude(Number(event.target.value));
+  }
+
+  function handleLonFieldChange(event) {
+    setLongitude(Number(event.target.value));
   }
 
   useEffect(() => {
@@ -148,7 +155,6 @@ export default function DashboardPage() {
               fullWidth={true}
               onInputChange={(event, place) => setPlaceName(place)}
               filterOptions={(x) => x} // disable built-in filtering
-              disablePortal
               options={placesList}
               renderInput={(params) => (
                 <TextField {...params} label="Search location" />
@@ -182,11 +188,13 @@ export default function DashboardPage() {
           id="longitude"
           label={longitude === null ? "Longitude" : convertLonLat(longitude)}
           variant="filled"
+          onChange={(event) => handleLonFieldChange(event)}
         />
         <TextField
           id="latitude"
           label={latitude === null ? "Latitude" : convertLonLat(latitude)}
           variant="filled"
+          onChange={(event) => handleLatFieldChange(event)}
         />
         <br />
         <MapView
