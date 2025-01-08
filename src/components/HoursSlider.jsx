@@ -81,7 +81,7 @@ export default function HoursSlider({
       lastMidnightTime,
       1,
       -6
-    ).date;
+    );
 
     const nauticalDusk = Astronomy.SearchAltitude(
       Astronomy.Body.Sun,
@@ -90,7 +90,7 @@ export default function HoursSlider({
       lastMidnightTime,
       1,
       -12
-    ).date;
+    );
 
     const astroDusk = Astronomy.SearchAltitude(
       Astronomy.Body.Sun,
@@ -99,12 +99,16 @@ export default function HoursSlider({
       lastMidnightTime,
       1,
       -18
-    ).date;
+    );
 
     const eventsList = [civilDusk, nauticalDusk, astroDusk];
     const eventsDiameters = eventsList.map((event) => {
+      if (event === null) {
+        return 0;
+      }
+      // comparing date object with astronomy-engine time, thus .date method on it
       const eventLength =
-        ((solarMidnight.getTime() - event.getTime()) * 2) / (1000 * 60);
+        ((solarMidnight.getTime() - event.date.getTime()) * 2) / (1000 * 60);
       return eventLength;
     });
 
