@@ -55,22 +55,128 @@ export default function HoursSlider({
 
   const eventTimes = calculateTimeBlocks();
 
-  const activeStyle = {
-    "& .MuiSlider-rail": {
-      background: `radial-gradient(
-      circle, 
-        navy 0%,
-        navy ${eventTimes.astroDusk / 14.4}%,
-        blue ${eventTimes.astroDusk / 14.4}%,
-        blue ${eventTimes.nauticalDusk / 14.4}%,
-        azure ${eventTimes.nauticalDusk / 14.4}%,
-        azure ${eventTimes.civilDusk / 14.4}%,
-        cadetblue ${eventTimes.civilDusk / 14.4}%,
-        cadetblue 100%
-      )`, // Gradient for rail colors
-      opacity: 1, // Ensure the rail is fully opaque
-      height: 20,
-    },
+  const railBackgroundStyle = () => {
+    const astroDuskColor = "navy";
+    const nauticalDuskColor = "blue";
+    const civilDuskColor = "azure";
+    const dayColor = "red";
+
+    const sunEq = Astronomy.Equator("Sun", time, observer, false, false);
+    const sunPosition = Astronomy.Horizon(
+      time,
+      observer,
+      sunEq.ra,
+      sunEq.dec,
+      "normal"
+    );
+
+    let railStyle = `linear-gradient(
+      to right,
+      ${dayColor} 0%,
+      ${dayColor} ${50 - eventTimes.civilDusk}%,
+      ${civilDuskColor} ${50 - eventTimes.civilDusk}%,
+      ${civilDuskColor} ${50 - eventTimes.nauticalDusk}%,
+      ${nauticalDuskColor} ${50 - eventTimes.nauticalDusk}%,
+      ${nauticalDuskColor} ${50 - eventTimes.astroDusk}%,
+      ${astroDuskColor} ${50 - eventTimes.astroDusk}%,
+      ${astroDuskColor} ${50 + eventTimes.astroDusk}%,
+      ${nauticalDuskColor} ${50 + eventTimes.astroDusk}%,
+      ${nauticalDuskColor} ${50 + eventTimes.nauticalDusk}%,
+      ${civilDuskColor} ${50 + eventTimes.nauticalDusk}%,
+      ${civilDuskColor} ${50 + eventTimes.civilDusk}%,
+      ${dayColor} ${50 + eventTimes.civilDusk}%,
+      ${dayColor} 100%)`;
+
+    if (eventTimes.civilDusk === 0) {
+      railStyle = `linear-gradient(
+      to right,
+      ${civilDuskColor} 0%,
+      ${civilDuskColor} ${50 - eventTimes.nauticalDusk}%,
+      ${nauticalDuskColor} ${50 - eventTimes.nauticalDusk}%,
+      ${nauticalDuskColor} ${50 - eventTimes.astroDusk}%,
+      ${astroDuskColor} ${50 - eventTimes.astroDusk}%,
+      ${astroDuskColor} ${50 + eventTimes.astroDusk}%,
+      ${nauticalDuskColor} ${50 + eventTimes.astroDusk}%,
+      ${nauticalDuskColor} ${50 + eventTimes.nauticalDusk}%,
+      ${civilDuskColor} ${50 + eventTimes.nauticalDusk}%,
+      ${civilDuskColor} 100%)`;
+    }
+
+    if (eventTimes.nauticalDusk === 0 && eventTimes.civilDusk === 0) {
+      railStyle = `linear-gradient(
+      to right,
+      ${nauticalDuskColor} 0%,
+      ${nauticalDuskColor} ${50 - eventTimes.astroDusk}%,
+      ${astroDuskColor} ${50 - eventTimes.astroDusk}%,
+      ${astroDuskColor} ${50 + eventTimes.astroDusk}%,
+      ${nauticalDuskColor} ${50 + eventTimes.astroDusk}%,
+      ${nauticalDuskColor} 100%)`;
+    }
+
+    if (
+      eventTimes.astroDusk === 0 &&
+      eventTimes.nauticalDusk !== 0 &&
+      eventTimes.civilDusk !== 0
+    ) {
+      railStyle = `linear-gradient(
+      to right,
+      ${dayColor} 0%,
+      ${dayColor} ${50 - eventTimes.civilDusk}%,
+      ${civilDuskColor} ${50 - eventTimes.civilDusk}%,
+      ${civilDuskColor} ${50 - eventTimes.nauticalDusk}%,
+      ${nauticalDuskColor} ${50 - eventTimes.nauticalDusk}%,
+      ${nauticalDuskColor} ${50 + eventTimes.nauticalDusk}%,
+      ${civilDuskColor} ${50 + eventTimes.nauticalDusk}%,
+      ${civilDuskColor} ${50 + eventTimes.civilDusk}%,
+      ${dayColor} ${50 + eventTimes.civilDusk}%,
+      ${dayColor} 100%)`;
+    }
+
+    if (
+      eventTimes.astroDusk === 0 &&
+      eventTimes.nauticalDusk === 0 &&
+      eventTimes.civilDusk !== 0
+    ) {
+      railStyle = `linear-gradient(
+      to right,
+      ${dayColor} 0%,
+      ${dayColor} ${50 - eventTimes.civilDusk}%,
+      ${civilDuskColor} ${50 - eventTimes.civilDusk}%,
+      ${civilDuskColor} ${50 - eventTimes.nauticalDusk}%,
+      ${civilDuskColor} ${50 + eventTimes.nauticalDusk}%,
+      ${civilDuskColor} ${50 + eventTimes.civilDusk}%,
+      ${dayColor} ${50 + eventTimes.civilDusk}%,
+      ${dayColor} 100%)`;
+    }
+
+    // 24h of day or astro night
+    if (
+      eventTimes.civilDusk === 0 &&
+      eventTimes.nauticalDusk === 0 &&
+      eventTimes.astroDusk === 0
+    ) {
+      if (sunPosition.altitude > 0) {
+        railStyle = `linear-gradient(
+          to right,
+          ${dayColor} 0%,
+          ${dayColor} 100%)`;
+      } else if (sunPosition.altitude < 0) {
+        railStyle = `linear-gradient(
+          to right,
+          ${astroDuskColor} 0%,
+          ${astroDuskColor} 100%)`;
+      }
+    }
+
+    const style = {
+      "& .MuiSlider-rail": {
+        background: railStyle, // Gradient for rail colors
+        opacity: 1, // Ensure the rail is fully opaque
+        height: 20,
+      },
+    };
+    console.log(sunPosition.altitude);
+    return style;
   };
 
   function calculateTimeBlocks() {
@@ -101,14 +207,23 @@ export default function HoursSlider({
       -18
     );
 
-    const eventsList = [civilDusk, nauticalDusk, astroDusk];
+    const sunSet = Astronomy.SearchAltitude(
+      Astronomy.Body.Sun,
+      observer,
+      -1,
+      lastMidnightTime,
+      1,
+      0
+    );
+
+    const eventsList = [civilDusk, nauticalDusk, astroDusk, sunSet];
     const eventsDiameters = eventsList.map((event) => {
       if (event === null) {
         return 0;
       }
       // comparing date object with astronomy-engine time, thus .date method on it
       const eventLength =
-        ((solarMidnight.getTime() - event.date.getTime()) * 2) / (1000 * 60);
+        (solarMidnight.getTime() - event.date.getTime()) / (1000 * 60 * 14.4); // 14.4 to convert to % values
       return eventLength;
     });
 
@@ -116,6 +231,7 @@ export default function HoursSlider({
       civilDusk: eventsDiameters[0],
       nauticalDusk: eventsDiameters[1],
       astroDusk: eventsDiameters[2],
+      sunSet: eventsDiameters[3],
     };
 
     return eventTimes;
@@ -202,9 +318,14 @@ export default function HoursSlider({
           min={0}
           max={1440}
           valueLabelFormat={valueLabelFormat}
-          sx={inactive === false ? activeStyle : inactiveStyle}
+          sx={railBackgroundStyle}
         />
       </Box>
+      <p>Rail styles:</p>
+      <p>astroDusk: {eventTimes.astroDusk}</p>
+      <p>nauticalDusk: {eventTimes.nauticalDusk}</p>
+      <p>civilDusk: {eventTimes.civilDusk}</p>
+      <p>sunSet: {eventTimes.sunSet}</p>
     </>
   );
 }
