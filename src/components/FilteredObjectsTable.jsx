@@ -15,8 +15,6 @@ function ObjectVisibilityLine({
   observationStart,
   observationEnd,
 }) {
-  console.log(startTime);
-  console.log(endTime);
   const totalTime = endTime - startTime;
   const totalObservationTime = observationEnd - observationStart;
   const observationStartOffset =

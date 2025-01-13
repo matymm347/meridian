@@ -175,7 +175,6 @@ export default function HoursSlider({
         height: 20,
       },
     };
-    console.log(sunPosition.altitude);
     return style;
   };
 
@@ -270,10 +269,14 @@ export default function HoursSlider({
 
   const handleChangeCommited = (event, value) => {
     for (let index = 0; index < value.length; index++) {
+      let crossingMidnight = false;
+
       const time = new Date();
       let newValue = value[index] + 720 + sliderMidnight;
+
       if (newValue > 1440) {
         newValue -= 1440;
+        crossingMidnight = true;
       }
 
       let hours = Math.floor(newValue / 60);
@@ -281,14 +284,6 @@ export default function HoursSlider({
       // add leading 0
       if (minutes < 10) {
         minutes = `0${minutes}`;
-      }
-
-      // reset counter after midnight
-      let crossingMidnight = false;
-
-      if (hours > 24) {
-        hours -= 25;
-        crossingMidnight = true;
       }
 
       if (crossingMidnight) {
@@ -321,11 +316,6 @@ export default function HoursSlider({
           sx={railBackgroundStyle}
         />
       </Box>
-      <p>Rail styles:</p>
-      <p>astroDusk: {eventTimes.astroDusk}</p>
-      <p>nauticalDusk: {eventTimes.nauticalDusk}</p>
-      <p>civilDusk: {eventTimes.civilDusk}</p>
-      <p>sunSet: {eventTimes.sunSet}</p>
     </>
   );
 }
