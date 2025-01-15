@@ -43,7 +43,7 @@ function ObjectVisibilityLine({
 export default function FilteredObjectsTable({
   latitude,
   longitude,
-  angle = 30,
+  angle,
   startTime,
   endTime,
 }) {

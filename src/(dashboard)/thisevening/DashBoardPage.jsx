@@ -5,6 +5,7 @@ import TextField from "@mui/material/TextField";
 import MapView from "../../components/MapView";
 import HoursSlider from "../../components/HoursSlider";
 import FilteredObjectsTable from "../../components/FilteredObjectsTable";
+import AngleSlider from "../../components/AngleSlider";
 import { useEffect, useState } from "react";
 import * as maptilerClient from "@maptiler/client";
 
@@ -19,6 +20,7 @@ export default function DashboardPage() {
   const [mapWindowOpened, setMapWindowOpened] = useState(false);
   const [startTime, setStartTime] = useState(null);
   const [endTime, setEndTime] = useState(null);
+  const [angle, setAngle] = useState(null);
 
   maptilerClient.config.apiKey = import.meta.env.VITE_MAP_TILER_API_KEY;
 
@@ -92,20 +94,16 @@ export default function DashboardPage() {
     }
   }
 
-  function convertLonLat(value) {
-    if (typeof value !== "string") {
-      return parseFloat(value).toFixed(4);
-    } else if (typeof value === "string") {
-      return value;
-    }
-  }
-
   function handleLatFieldChange(event) {
     setLatitude(Number(event.target.value));
   }
 
   function handleLonFieldChange(event) {
     setLongitude(Number(event.target.value));
+  }
+
+  function handleAngleChange(angle) {
+    setAngle(Number(angle));
   }
 
   useEffect(() => {
@@ -146,10 +144,28 @@ export default function DashboardPage() {
 
   return (
     <>
-      <Box>
-        <p>Your location:</p>
-        <Box sx={{ display: "flex", flexWrap: "wrap" }}>
-          <Box sx={{ display: "flex", flexGrow: 1, maxWidth: 600 }}>
+      <Box
+        sx={{
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+        }}
+      >
+        <Box
+          sx={{
+            display: "flex",
+            flexWrap: "wrap",
+            width: "100%",
+            maxWidth: "800px",
+          }}
+        >
+          <Box
+            sx={{
+              display: "flex",
+              flexGrow: 1,
+              maxWidth: 600,
+            }}
+          >
             <Autocomplete
               onChange={(event, value) => handlePlaceChange(value)}
               fullWidth={true}
@@ -184,19 +200,37 @@ export default function DashboardPage() {
           </Button>
         </Box>
         <br />
-        <TextField
-          id="longitude"
-          label={longitude === null ? "Longitude" : convertLonLat(longitude)}
-          variant="filled"
-          onChange={(event) => handleLonFieldChange(event)}
-        />
-        <TextField
-          id="latitude"
-          label={latitude === null ? "Latitude" : convertLonLat(latitude)}
-          variant="filled"
-          onChange={(event) => handleLatFieldChange(event)}
-        />
-        <br />
+        <Box sx={{ display: "flex", gap: "10px" }}>
+          <TextField
+            sx={{ maxWidth: "200px" }}
+            id="longitude"
+            label={"Longitude"}
+            size="small"
+            variant="standard"
+            value={longitude}
+            onChange={(event) => handleLonFieldChange(event)}
+            slotProps={{
+              inputLabel: {
+                shrink: !!longitude || longitude === 0,
+              },
+            }}
+          />
+          <TextField
+            sx={{ maxWidth: "200px" }}
+            id="latitude"
+            label={"Latitude"}
+            size="small"
+            variant="standard"
+            value={latitude}
+            onChange={(event) => handleLatFieldChange(event)}
+            slotProps={{
+              inputLabel: {
+                shrink: !!latitude || latitude === 0,
+              },
+            }}
+          />
+          <br />
+        </Box>
         <MapView
           // center map on Wroclaw by default
           lon={longitude === null ? 17.0385 : longitude}
@@ -214,11 +248,17 @@ export default function DashboardPage() {
           handleStartTimeUpdate={handleStartTimeUpdate}
           handleEndTimeUpdate={handleEndTimeUpdate}
         />
-        {startTime !== null && endTime !== null && (
+        <p>Minimum altitude:</p>
+        <AngleSlider
+          inactive={longitude === null || latitude === null ? true : false}
+          handleAngleChange={handleAngleChange}
+        />
+        {startTime !== null && endTime !== null && angle !== null && (
           <>
             <FilteredObjectsTable
               latitude={latitude}
               longitude={longitude}
+              angle={angle}
               startTime={startTime}
               endTime={endTime}
             />

@@ -3,6 +3,7 @@ import Box from "@mui/material/Box";
 import Slider from "@mui/material/Slider";
 import { useEffect, useState } from "react";
 import * as Astronomy from "astronomy-engine";
+import { getDialogActionsUtilityClass } from "@mui/material";
 
 export default function HoursSlider({
   latitude,
@@ -17,7 +18,7 @@ export default function HoursSlider({
   if (inactive) {
     return (
       <>
-        <Box sx={{ width: 600 }}>
+        <Box sx={{ width: "100%" }}>
           <Slider
             disabled={true}
             getAriaLabel={() => "Observation hours"}
@@ -49,9 +50,16 @@ export default function HoursSlider({
     lastMidnightTime,
     1
   ).time.date;
+
   let sliderMidnight = solarMidnight.toString();
   sliderMidnight = sliderMidnight.slice(16, 21);
   sliderMidnight = timeToMinutes(sliderMidnight);
+
+  console.log(`
+    time: ${time}
+    lastmidnightTime: ${lastMidnightTime}
+    solarmidnight: ${solarMidnight}
+    slidermidnight: ${sliderMidnight}`);
 
   const eventTimes = calculateTimeBlocks();
 
@@ -220,6 +228,10 @@ export default function HoursSlider({
       if (event === null) {
         return 0;
       }
+
+      if (solarMidnight < event.date) {
+        solarMidnight.setDate(solarMidnight.getDate() + 1);
+      }
       // comparing date object with astronomy-engine time, thus .date method on it
       const eventLength =
         (solarMidnight.getTime() - event.date.getTime()) / (1000 * 60 * 14.4); // 14.4 to convert to % values
@@ -302,14 +314,13 @@ export default function HoursSlider({
 
   return (
     <>
-      <Box sx={{ width: 600 }}>
+      <Box sx={{ width: "100%" }}>
         <Slider
-          disabled={inactive}
           getAriaLabel={() => "Observation hours"}
           value={value}
           onChange={handleChange}
           onChangeCommitted={handleChangeCommited}
-          valueLabelDisplay={inactive === false ? "on" : "off"}
+          valueLabelDisplay={"on"}
           min={0}
           max={1440}
           valueLabelFormat={valueLabelFormat}

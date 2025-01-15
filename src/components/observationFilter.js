@@ -72,6 +72,34 @@ export default function observationFilter(
     observationStart: null,
     observationEnd: null,
   };
+  if (nr == 1) {
+    console.log(`
+      atTargetAngleAscend: ${atTargetAngleAscend}
+      startTimeAstro: ${startTimeAstro}
+      startAz: ${startAz.altitude}`);
+  }
+
+  // Object never cross target angle and never goes above it
+  if (
+    atTargetAngleAscend === null &&
+    atTargetAngleDescend === null &&
+    startAz.altitude < angle
+  ) {
+    return objectData;
+  }
+
+  // Object never cross target angle and is always above it
+  if (
+    atTargetAngleAscend === null &&
+    atTargetAngleDescend === null &&
+    startAz.altitude >= angle
+  ) {
+    objectData.available = true;
+    objectData.observationStart = startTime;
+    objectData.observationEnd = endTime;
+
+    return objectData;
+  }
 
   // Test if star trail is within observation hours
   if (
