@@ -1,9 +1,13 @@
 import PropTypes from "prop-types";
 import Box from "@mui/material/Box";
 import Slider from "@mui/material/Slider";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import * as Astronomy from "astronomy-engine";
-import { getDialogActionsUtilityClass } from "@mui/material";
+
+const astroDuskColor = "#21215A";
+const nauticalDuskColor = "#273C99";
+const civilDuskColor = "#3B54A7";
+const dayColor = "#9774B4";
 
 export default function HoursSlider({
   latitude,
@@ -64,11 +68,6 @@ export default function HoursSlider({
   const eventTimes = calculateTimeBlocks();
 
   const railBackgroundStyle = () => {
-    const astroDuskColor = "navy";
-    const nauticalDuskColor = "blue";
-    const civilDuskColor = "azure";
-    const dayColor = "red";
-
     const sunEq = Astronomy.Equator("Sun", time, observer, false, false);
     const sunPosition = Astronomy.Horizon(
       time,
@@ -326,6 +325,63 @@ export default function HoursSlider({
           valueLabelFormat={valueLabelFormat}
           sx={railBackgroundStyle}
         />
+        <Box
+          id="hours-slider-legend"
+          sx={{ display: "flex", justifyContent: "center" }}
+        >
+          <Box sx={{ alignSelf: "center", display: "flex", margin: "10px" }}>
+            <div
+              style={{
+                width: "15px",
+                height: "15px",
+                borderRadius: "50%",
+                backgroundColor: astroDuskColor,
+                alignSelf: "center",
+                margin: "5px",
+              }}
+            ></div>
+            <p style={{ color: "#999", fontSize: "10px" }}>Astro Dark</p>
+          </Box>
+          <Box sx={{ alignSelf: "center", display: "flex", margin: "10px" }}>
+            <div
+              style={{
+                width: "15px",
+                height: "15px",
+                borderRadius: "50%",
+                backgroundColor: nauticalDuskColor,
+                alignSelf: "center",
+                margin: "5px",
+              }}
+            ></div>
+            <p style={{ color: "#999", fontSize: "10px" }}>Nautical Dark</p>
+          </Box>
+          <Box sx={{ alignSelf: "center", display: "flex", margin: "10px" }}>
+            <div
+              style={{
+                width: "15px",
+                height: "15px",
+                borderRadius: "50%",
+                backgroundColor: civilDuskColor,
+                alignSelf: "center",
+                margin: "5px",
+              }}
+            ></div>
+            <p style={{ color: "#999", fontSize: "10px" }}>Civil Dark</p>
+          </Box>
+          <Box sx={{ alignSelf: "center", display: "flex", margin: "10px" }}>
+            <div
+              style={{
+                width: "15px",
+                height: "15px",
+                borderRadius: "50%",
+                backgroundColor: dayColor,
+                alignSelf: "center",
+                margin: "5px",
+              }}
+            ></div>
+            <p style={{ color: "#999", fontSize: "10px" }}>Day</p>
+          </Box>
+        </Box>
       </Box>
     </>
   );
