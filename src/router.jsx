@@ -8,42 +8,45 @@ import Tomorrow from "./(dashboard)/thisevening/Tomorrow";
 import MeridianChoice from "./(dashboard)/thisevening/MeridianChoice";
 import AdvancedFinder from "./(dashboard)/thisevening/AdvancedFinder";
 
-const router = createBrowserRouter([
-  {
-    Component: App,
-    children: [
-      {
-        path: "/",
-        Component: Layout,
-        children: [
-          {
-            path: "/",
-            Component: DashboardPage,
-          },
-          {
-            path: "/thisevening",
-            Component: ThisEvening,
-          },
-          {
-            path: "/tomorrow",
-            Component: Tomorrow,
-          },
-          {
-            path: "/meridianchoice",
-            Component: MeridianChoice,
-          },
-          {
-            path: "/advancedfinder",
-            Component: AdvancedFinder,
-          },
-        ],
-      },
-    ],
-  },
-  {
-    path: "/welcomepage",
-    Component: WelcomePage,
-  },
-]);
+const router = createBrowserRouter(
+  [
+    {
+      Component: App,
+      children: [
+        {
+          path: "/",
+          Component: Layout,
+          children: [
+            {
+              path: "/",
+              Component: DashboardPage,
+            },
+            {
+              path: "/thisevening",
+              Component: ThisEvening,
+            },
+            {
+              path: "/tomorrow",
+              Component: Tomorrow,
+            },
+            {
+              path: "/meridianchoice",
+              Component: MeridianChoice,
+            },
+            {
+              path: "/advancedfinder",
+              Component: AdvancedFinder,
+            },
+          ],
+        },
+      ],
+    },
+    {
+      path: "/welcomepage",
+      Component: WelcomePage,
+    },
+  ],
+  { future: { v7_relativeSplatPath: true } }
+);
 
 export { router };

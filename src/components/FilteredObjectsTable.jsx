@@ -73,30 +73,29 @@ export default function FilteredObjectsTable({
               );
               if (objectData.available === true) {
                 return (
-                  <>
-                    <TableRow
-                      key={row.nr}
-                      sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
-                    >
-                      <TableCell>{row.nr}</TableCell>
-                      <TableCell>
-                        {objectData.observationStart.toLocaleTimeString()}
-                      </TableCell>
-                      <TableCell>
-                        {objectData.observationEnd.toLocaleTimeString()}
-                      </TableCell>
-                      <TableCell>
-                        <ObjectVisibilityLine
-                          startTime={startTime}
-                          endTime={endTime}
-                          observationStart={objectData.observationStart}
-                          observationEnd={objectData.observationEnd}
-                        />
-                      </TableCell>
-                    </TableRow>
-                  </>
+                  <TableRow
+                    key={row.nr}
+                    sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
+                  >
+                    <TableCell>{row.nr}</TableCell>
+                    <TableCell>
+                      {objectData.observationStart.toLocaleTimeString()}
+                    </TableCell>
+                    <TableCell>
+                      {objectData.observationEnd.toLocaleTimeString()}
+                    </TableCell>
+                    <TableCell>
+                      <ObjectVisibilityLine
+                        startTime={startTime}
+                        endTime={endTime}
+                        observationStart={objectData.observationStart}
+                        observationEnd={objectData.observationEnd}
+                      />
+                    </TableCell>
+                  </TableRow>
                 );
               }
+              return null;
             })}
           </TableBody>
         </Table>

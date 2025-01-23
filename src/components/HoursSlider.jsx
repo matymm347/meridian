@@ -1,7 +1,7 @@
 import PropTypes from "prop-types";
 import Box from "@mui/material/Box";
 import Slider from "@mui/material/Slider";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import * as Astronomy from "astronomy-engine";
 
 const astroDuskColor = "#21215A";
@@ -13,35 +13,11 @@ export default function HoursSlider({
   latitude,
   longitude,
   height,
-  inactive,
   handleStartTimeUpdate,
   handleEndTimeUpdate,
 }) {
   const [value, setValue] = useState([500, 1000]);
-
-  if (inactive) {
-    return (
-      <>
-        <Box sx={{ width: "100%" }}>
-          <Slider
-            disabled={true}
-            getAriaLabel={() => "Observation hours"}
-            value={value}
-            valueLabelDisplay={"off"}
-            min={0}
-            max={1440}
-            sx={{
-              "& .MuiSlider-rail": {
-                background: "grey",
-                opacity: 1, // Ensure the rail is fully opaque
-                height: 20,
-              },
-            }}
-          />
-        </Box>
-      </>
-    );
-  }
+  const [atDefaultState, setAtDefaultState] = useState(true);
 
   const observer = new Astronomy.Observer(latitude, longitude, 0);
   const time = new Date();
@@ -59,12 +35,6 @@ export default function HoursSlider({
   sliderMidnight = sliderMidnight.slice(16, 21);
   sliderMidnight = timeToMinutes(sliderMidnight);
 
-  console.log(`
-    time: ${time}
-    lastmidnightTime: ${lastMidnightTime}
-    solarmidnight: ${solarMidnight}
-    slidermidnight: ${sliderMidnight}`);
-
   const eventTimes = calculateTimeBlocks();
 
   const railBackgroundStyle = () => {
@@ -78,46 +48,46 @@ export default function HoursSlider({
     );
 
     let railStyle = `linear-gradient(
-      to right,
-      ${dayColor} 0%,
-      ${dayColor} ${50 - eventTimes.civilDusk}%,
-      ${civilDuskColor} ${50 - eventTimes.civilDusk}%,
-      ${civilDuskColor} ${50 - eventTimes.nauticalDusk}%,
-      ${nauticalDuskColor} ${50 - eventTimes.nauticalDusk}%,
-      ${nauticalDuskColor} ${50 - eventTimes.astroDusk}%,
-      ${astroDuskColor} ${50 - eventTimes.astroDusk}%,
-      ${astroDuskColor} ${50 + eventTimes.astroDusk}%,
-      ${nauticalDuskColor} ${50 + eventTimes.astroDusk}%,
-      ${nauticalDuskColor} ${50 + eventTimes.nauticalDusk}%,
-      ${civilDuskColor} ${50 + eventTimes.nauticalDusk}%,
-      ${civilDuskColor} ${50 + eventTimes.civilDusk}%,
-      ${dayColor} ${50 + eventTimes.civilDusk}%,
-      ${dayColor} 100%)`;
+        to right,
+        ${dayColor} 0%,
+        ${dayColor} ${50 - eventTimes.civilDusk}%,
+        ${civilDuskColor} ${50 - eventTimes.civilDusk}%,
+        ${civilDuskColor} ${50 - eventTimes.nauticalDusk}%,
+        ${nauticalDuskColor} ${50 - eventTimes.nauticalDusk}%,
+        ${nauticalDuskColor} ${50 - eventTimes.astroDusk}%,
+        ${astroDuskColor} ${50 - eventTimes.astroDusk}%,
+        ${astroDuskColor} ${50 + eventTimes.astroDusk}%,
+        ${nauticalDuskColor} ${50 + eventTimes.astroDusk}%,
+        ${nauticalDuskColor} ${50 + eventTimes.nauticalDusk}%,
+        ${civilDuskColor} ${50 + eventTimes.nauticalDusk}%,
+        ${civilDuskColor} ${50 + eventTimes.civilDusk}%,
+        ${dayColor} ${50 + eventTimes.civilDusk}%,
+        ${dayColor} 100%)`;
 
     if (eventTimes.civilDusk === 0) {
       railStyle = `linear-gradient(
-      to right,
-      ${civilDuskColor} 0%,
-      ${civilDuskColor} ${50 - eventTimes.nauticalDusk}%,
-      ${nauticalDuskColor} ${50 - eventTimes.nauticalDusk}%,
-      ${nauticalDuskColor} ${50 - eventTimes.astroDusk}%,
-      ${astroDuskColor} ${50 - eventTimes.astroDusk}%,
-      ${astroDuskColor} ${50 + eventTimes.astroDusk}%,
-      ${nauticalDuskColor} ${50 + eventTimes.astroDusk}%,
-      ${nauticalDuskColor} ${50 + eventTimes.nauticalDusk}%,
-      ${civilDuskColor} ${50 + eventTimes.nauticalDusk}%,
-      ${civilDuskColor} 100%)`;
+        to right,
+        ${civilDuskColor} 0%,
+        ${civilDuskColor} ${50 - eventTimes.nauticalDusk}%,
+        ${nauticalDuskColor} ${50 - eventTimes.nauticalDusk}%,
+        ${nauticalDuskColor} ${50 - eventTimes.astroDusk}%,
+        ${astroDuskColor} ${50 - eventTimes.astroDusk}%,
+        ${astroDuskColor} ${50 + eventTimes.astroDusk}%,
+        ${nauticalDuskColor} ${50 + eventTimes.astroDusk}%,
+        ${nauticalDuskColor} ${50 + eventTimes.nauticalDusk}%,
+        ${civilDuskColor} ${50 + eventTimes.nauticalDusk}%,
+        ${civilDuskColor} 100%)`;
     }
 
     if (eventTimes.nauticalDusk === 0 && eventTimes.civilDusk === 0) {
       railStyle = `linear-gradient(
-      to right,
-      ${nauticalDuskColor} 0%,
-      ${nauticalDuskColor} ${50 - eventTimes.astroDusk}%,
-      ${astroDuskColor} ${50 - eventTimes.astroDusk}%,
-      ${astroDuskColor} ${50 + eventTimes.astroDusk}%,
-      ${nauticalDuskColor} ${50 + eventTimes.astroDusk}%,
-      ${nauticalDuskColor} 100%)`;
+        to right,
+        ${nauticalDuskColor} 0%,
+        ${nauticalDuskColor} ${50 - eventTimes.astroDusk}%,
+        ${astroDuskColor} ${50 - eventTimes.astroDusk}%,
+        ${astroDuskColor} ${50 + eventTimes.astroDusk}%,
+        ${nauticalDuskColor} ${50 + eventTimes.astroDusk}%,
+        ${nauticalDuskColor} 100%)`;
     }
 
     if (
@@ -126,17 +96,17 @@ export default function HoursSlider({
       eventTimes.civilDusk !== 0
     ) {
       railStyle = `linear-gradient(
-      to right,
-      ${dayColor} 0%,
-      ${dayColor} ${50 - eventTimes.civilDusk}%,
-      ${civilDuskColor} ${50 - eventTimes.civilDusk}%,
-      ${civilDuskColor} ${50 - eventTimes.nauticalDusk}%,
-      ${nauticalDuskColor} ${50 - eventTimes.nauticalDusk}%,
-      ${nauticalDuskColor} ${50 + eventTimes.nauticalDusk}%,
-      ${civilDuskColor} ${50 + eventTimes.nauticalDusk}%,
-      ${civilDuskColor} ${50 + eventTimes.civilDusk}%,
-      ${dayColor} ${50 + eventTimes.civilDusk}%,
-      ${dayColor} 100%)`;
+        to right,
+        ${dayColor} 0%,
+        ${dayColor} ${50 - eventTimes.civilDusk}%,
+        ${civilDuskColor} ${50 - eventTimes.civilDusk}%,
+        ${civilDuskColor} ${50 - eventTimes.nauticalDusk}%,
+        ${nauticalDuskColor} ${50 - eventTimes.nauticalDusk}%,
+        ${nauticalDuskColor} ${50 + eventTimes.nauticalDusk}%,
+        ${civilDuskColor} ${50 + eventTimes.nauticalDusk}%,
+        ${civilDuskColor} ${50 + eventTimes.civilDusk}%,
+        ${dayColor} ${50 + eventTimes.civilDusk}%,
+        ${dayColor} 100%)`;
     }
 
     if (
@@ -145,15 +115,15 @@ export default function HoursSlider({
       eventTimes.civilDusk !== 0
     ) {
       railStyle = `linear-gradient(
-      to right,
-      ${dayColor} 0%,
-      ${dayColor} ${50 - eventTimes.civilDusk}%,
-      ${civilDuskColor} ${50 - eventTimes.civilDusk}%,
-      ${civilDuskColor} ${50 - eventTimes.nauticalDusk}%,
-      ${civilDuskColor} ${50 + eventTimes.nauticalDusk}%,
-      ${civilDuskColor} ${50 + eventTimes.civilDusk}%,
-      ${dayColor} ${50 + eventTimes.civilDusk}%,
-      ${dayColor} 100%)`;
+        to right,
+        ${dayColor} 0%,
+        ${dayColor} ${50 - eventTimes.civilDusk}%,
+        ${civilDuskColor} ${50 - eventTimes.civilDusk}%,
+        ${civilDuskColor} ${50 - eventTimes.nauticalDusk}%,
+        ${civilDuskColor} ${50 + eventTimes.nauticalDusk}%,
+        ${civilDuskColor} ${50 + eventTimes.civilDusk}%,
+        ${dayColor} ${50 + eventTimes.civilDusk}%,
+        ${dayColor} 100%)`;
     }
 
     // 24h of day or astro night
@@ -164,14 +134,14 @@ export default function HoursSlider({
     ) {
       if (sunPosition.altitude > 0) {
         railStyle = `linear-gradient(
-          to right,
-          ${dayColor} 0%,
-          ${dayColor} 100%)`;
+            to right,
+            ${dayColor} 0%,
+            ${dayColor} 100%)`;
       } else if (sunPosition.altitude < 0) {
         railStyle = `linear-gradient(
-          to right,
-          ${astroDuskColor} 0%,
-          ${astroDuskColor} 100%)`;
+            to right,
+            ${astroDuskColor} 0%,
+            ${astroDuskColor} 100%)`;
       }
     }
 
@@ -279,6 +249,7 @@ export default function HoursSlider({
   };
 
   const handleChangeCommited = (event, value) => {
+    setAtDefaultState(false);
     for (let index = 0; index < value.length; index++) {
       let crossingMidnight = false;
 
@@ -311,79 +282,81 @@ export default function HoursSlider({
     }
   };
 
+  useEffect(() => {
+    handleChangeCommited(null, value);
+  }, []);
+
   return (
-    <>
-      <Box sx={{ width: "100%" }}>
-        <Slider
-          getAriaLabel={() => "Observation hours"}
-          value={value}
-          onChange={handleChange}
-          onChangeCommitted={handleChangeCommited}
-          valueLabelDisplay={"on"}
-          min={0}
-          max={1440}
-          valueLabelFormat={valueLabelFormat}
-          sx={railBackgroundStyle}
-        />
-        <Box
-          id="hours-slider-legend"
-          sx={{ display: "flex", justifyContent: "center" }}
-        >
-          <Box sx={{ alignSelf: "center", display: "flex", margin: "10px" }}>
-            <div
-              style={{
-                width: "15px",
-                height: "15px",
-                borderRadius: "50%",
-                backgroundColor: astroDuskColor,
-                alignSelf: "center",
-                margin: "5px",
-              }}
-            ></div>
-            <p style={{ color: "#999", fontSize: "10px" }}>Astro Dark</p>
-          </Box>
-          <Box sx={{ alignSelf: "center", display: "flex", margin: "10px" }}>
-            <div
-              style={{
-                width: "15px",
-                height: "15px",
-                borderRadius: "50%",
-                backgroundColor: nauticalDuskColor,
-                alignSelf: "center",
-                margin: "5px",
-              }}
-            ></div>
-            <p style={{ color: "#999", fontSize: "10px" }}>Nautical Dark</p>
-          </Box>
-          <Box sx={{ alignSelf: "center", display: "flex", margin: "10px" }}>
-            <div
-              style={{
-                width: "15px",
-                height: "15px",
-                borderRadius: "50%",
-                backgroundColor: civilDuskColor,
-                alignSelf: "center",
-                margin: "5px",
-              }}
-            ></div>
-            <p style={{ color: "#999", fontSize: "10px" }}>Civil Dark</p>
-          </Box>
-          <Box sx={{ alignSelf: "center", display: "flex", margin: "10px" }}>
-            <div
-              style={{
-                width: "15px",
-                height: "15px",
-                borderRadius: "50%",
-                backgroundColor: dayColor,
-                alignSelf: "center",
-                margin: "5px",
-              }}
-            ></div>
-            <p style={{ color: "#999", fontSize: "10px" }}>Day</p>
-          </Box>
+    <Box sx={{ width: "100%" }}>
+      <Slider
+        getAriaLabel={() => "Observation hours"}
+        value={value}
+        onChange={handleChange}
+        onChangeCommitted={handleChangeCommited}
+        valueLabelDisplay={"on"}
+        min={0}
+        max={1440}
+        valueLabelFormat={valueLabelFormat}
+        sx={railBackgroundStyle}
+      />
+      <Box
+        id="hours-slider-legend"
+        sx={{ display: "flex", justifyContent: "center" }}
+      >
+        <Box sx={{ alignSelf: "center", display: "flex", margin: "10px" }}>
+          <div
+            style={{
+              width: "15px",
+              height: "15px",
+              borderRadius: "50%",
+              backgroundColor: astroDuskColor,
+              alignSelf: "center",
+              margin: "5px",
+            }}
+          ></div>
+          <p style={{ color: "#999", fontSize: "10px" }}>Astro Dark</p>
+        </Box>
+        <Box sx={{ alignSelf: "center", display: "flex", margin: "10px" }}>
+          <div
+            style={{
+              width: "15px",
+              height: "15px",
+              borderRadius: "50%",
+              backgroundColor: nauticalDuskColor,
+              alignSelf: "center",
+              margin: "5px",
+            }}
+          ></div>
+          <p style={{ color: "#999", fontSize: "10px" }}>Nautical Dark</p>
+        </Box>
+        <Box sx={{ alignSelf: "center", display: "flex", margin: "10px" }}>
+          <div
+            style={{
+              width: "15px",
+              height: "15px",
+              borderRadius: "50%",
+              backgroundColor: civilDuskColor,
+              alignSelf: "center",
+              margin: "5px",
+            }}
+          ></div>
+          <p style={{ color: "#999", fontSize: "10px" }}>Civil Dark</p>
+        </Box>
+        <Box sx={{ alignSelf: "center", display: "flex", margin: "10px" }}>
+          <div
+            style={{
+              width: "15px",
+              height: "15px",
+              borderRadius: "50%",
+              backgroundColor: dayColor,
+              alignSelf: "center",
+              margin: "5px",
+            }}
+          ></div>
+          <p style={{ color: "#999", fontSize: "10px" }}>Day</p>
         </Box>
       </Box>
-    </>
+    </Box>
   );
 }
 

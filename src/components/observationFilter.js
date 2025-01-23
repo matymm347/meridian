@@ -72,12 +72,6 @@ export default function observationFilter(
     observationStart: null,
     observationEnd: null,
   };
-  if (nr == 1) {
-    console.log(`
-      atTargetAngleAscend: ${atTargetAngleAscend}
-      startTimeAstro: ${startTimeAstro}
-      startAz: ${startAz.altitude}`);
-  }
 
   // Object never cross target angle and never goes above it
   if (

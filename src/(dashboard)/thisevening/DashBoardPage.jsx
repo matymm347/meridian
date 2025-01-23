@@ -5,6 +5,7 @@ import TextField from "@mui/material/TextField";
 import MapView from "../../components/MapView";
 import HoursSlider from "../../components/HoursSlider";
 import FilteredObjectsTable from "../../components/FilteredObjectsTable";
+import Slider from "@mui/material/Slider";
 import AngleSlider from "../../components/AngleSlider";
 import { useEffect, useState } from "react";
 import * as maptilerClient from "@maptiler/client";
@@ -207,7 +208,7 @@ export default function DashboardPage() {
             label={"Longitude"}
             size="small"
             variant="standard"
-            value={longitude}
+            value={longitude ?? ""}
             onChange={(event) => handleLonFieldChange(event)}
             slotProps={{
               inputLabel: {
@@ -221,7 +222,7 @@ export default function DashboardPage() {
             label={"Latitude"}
             size="small"
             variant="standard"
-            value={latitude}
+            value={latitude ?? ""}
             onChange={(event) => handleLatFieldChange(event)}
             slotProps={{
               inputLabel: {
@@ -241,13 +242,33 @@ export default function DashboardPage() {
         />
         <br />
         <p>Observation hours:</p>
-        <HoursSlider
-          latitude={latitude}
-          longitude={longitude}
-          inactive={longitude === null || latitude === null ? true : false}
-          handleStartTimeUpdate={handleStartTimeUpdate}
-          handleEndTimeUpdate={handleEndTimeUpdate}
-        />
+        {longitude === null || latitude === null ? (
+          <Box sx={{ width: "100%" }}>
+            <Slider
+              disabled={true}
+              getAriaLabel={() => "Observation hours"}
+              value={[500, 1000]}
+              valueLabelDisplay={"off"}
+              min={0}
+              max={1440}
+              sx={{
+                "& .MuiSlider-rail": {
+                  background: "grey",
+                  opacity: 1, // Ensure the rail is fully opaque
+                  height: 20,
+                },
+              }}
+            />
+          </Box>
+        ) : (
+          <HoursSlider
+            latitude={latitude}
+            longitude={longitude}
+            inactive={longitude === null || latitude === null ? true : false}
+            handleStartTimeUpdate={handleStartTimeUpdate}
+            handleEndTimeUpdate={handleEndTimeUpdate}
+          />
+        )}
         <p>Minimum altitude:</p>
         <AngleSlider
           inactive={longitude === null || latitude === null ? true : false}
