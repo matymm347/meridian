@@ -10,7 +10,7 @@ import AngleSlider from "../../components/AngleSlider";
 import { useEffect, useState } from "react";
 import * as maptilerClient from "@maptiler/client";
 
-export default function DashboardPage() {
+export default function WimmerTablePage() {
   const [apiData, setApiData] = useState({});
   const [placeName, setPlaceName] = useState("");
   const [latitude, setLatitude] = useState(null);

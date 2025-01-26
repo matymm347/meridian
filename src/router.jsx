@@ -2,11 +2,12 @@ import { createBrowserRouter } from "react-router-dom";
 import WelcomePage from "./components/welcomepage/WelcomePage";
 import App from "./components/App";
 import Layout from "./components/Layout";
-import DashboardPage from "./(dashboard)/thisevening/DashBoardPage";
+import DashboardPage from "./(dashboard)/thisevening/WimmerTablePage";
 import ThisEvening from "./(dashboard)/thisevening/ThisEvening";
 import Tomorrow from "./(dashboard)/thisevening/Tomorrow";
 import MeridianChoice from "./(dashboard)/thisevening/MeridianChoice";
 import AdvancedFinder from "./(dashboard)/thisevening/AdvancedFinder";
+import WimmerTablePage from "./(dashboard)/thisevening/WimmerTablePage";
 
 const router = createBrowserRouter(
   [
@@ -19,7 +20,7 @@ const router = createBrowserRouter(
           children: [
             {
               path: "/",
-              Component: DashboardPage,
+              Component: WimmerTablePage,
             },
             {
               path: "/thisevening",

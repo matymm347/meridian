@@ -14,7 +14,7 @@ const NAVIGATION = [
     title: "Main items",
   },
   {
-    title: "Dashboard",
+    title: "Wimmer Table Finder",
     icon: <DashboardIcon />,
   },
   {

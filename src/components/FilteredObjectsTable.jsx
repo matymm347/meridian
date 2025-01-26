@@ -1,5 +1,4 @@
 import Box from "@mui/material/Box";
-import { useEffect, useState } from "react";
 import { TableContainer } from "@mui/material";
 import { Table } from "@mui/material";
 import { TableHead } from "@mui/material";
@@ -9,38 +8,7 @@ import { TableBody } from "@mui/material";
 import wimmerTable from "./wimmerTable";
 import observationFilter from "./observationFilter";
 import Checkbox from "@mui/material/Checkbox";
-import { BorderColor } from "@mui/icons-material";
-
-function ObjectVisibilityLine({
-  startTime,
-  endTime,
-  observationStart,
-  observationEnd,
-}) {
-  const totalTime = endTime - startTime;
-  const totalObservationTime = observationEnd - observationStart;
-  const observationStartOffset =
-    (100 * (observationStart - startTime)) / totalTime;
-  const observationLineLength = (100 * totalObservationTime) / totalTime;
-
-  return (
-    <>
-      <Box
-        sx={{ border: "1px solid blue", height: "20px", position: "relative" }}
-      >
-        <Box
-          sx={{
-            width: `${observationLineLength}%`,
-            height: "100%",
-            position: "absolute",
-            left: `${observationStartOffset}%`,
-            border: "1px solid red",
-          }}
-        ></Box>
-      </Box>
-    </>
-  );
-}
+import ObjectVisibilityLine from "./ObjectVisibilityLine";
 
 function returnObjectName(row) {
   const catalogPrefixes = [
@@ -91,6 +59,7 @@ function returnDifficulty(row) {
     width: "15px",
     height: "15px",
     borderRadius: "50%",
+    margin: "auto",
   };
 
   const easyColor = "#4CAF50";
@@ -108,21 +77,21 @@ function returnDifficulty(row) {
   return <div style={style}></div>;
 }
 
-function returnVisibilityWindow(row, objectData) {
+function returnVisibilityWindow(row, objectData, startTime, endTime) {
   return (
-    <Box sx={{ display: "flex", flexDirection: "column" }}>
+    <>
       <Box>
-        {objectData.observationStart.toLocaleTimeString()}
+        {objectData.observationStart.toLocaleTimeString().slice(0, 5)}
         {" - "}
-        {objectData.observationEnd.toLocaleTimeString()}
+        {objectData.observationEnd.toLocaleTimeString().slice(0, 5)}
       </Box>
       <ObjectVisibilityLine
-        startTime={row.startTime}
-        endTime={row.endTime}
+        startTime={startTime}
+        endTime={endTime}
         observationStart={objectData.observationStart}
         observationEnd={objectData.observationEnd}
       />
-    </Box>
+    </>
   );
 }
 
@@ -131,14 +100,14 @@ function returnNotes(row) {
   const display = "inline-block";
   const padding = "2px 10px";
   const fontWeight = "bold";
-  const marginInline = "2px";
+  const margin = "2px";
 
   const commonStyle = {
     borderRadius,
     display,
     padding,
     fontWeight,
-    marginInline,
+    margin,
   };
 
   const greatForBinocularsStyle = {
@@ -204,7 +173,11 @@ function returnNotes(row) {
 
   const notesList = objectNotesPrefixesStyles.map((e) => {
     if (row[e.key] === true) {
-      return <div style={e.style}>{e.prefix}</div>;
+      return (
+        <div key={e.key} style={e.style}>
+          {e.prefix}
+        </div>
+      );
     }
   });
 
@@ -244,28 +217,37 @@ export default function FilteredObjectsTable({
                 row.ra_number,
                 row.dec_number
               );
-              if (objectData.available === true) {
-                return (
-                  <TableRow
-                    key={row.nr}
-                    sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
-                  >
-                    <TableCell>
-                      <Checkbox />
-                    </TableCell>
-                    <TableCell>{returnObjectName(row)}</TableCell>
-                    <TableCell>{returnObjectType(row)}</TableCell>
-                    <TableCell align="center">
-                      {returnDifficulty(row)}
-                    </TableCell>
-                    <TableCell>
-                      {returnVisibilityWindow(row, objectData)}
-                    </TableCell>
-                    <TableCell>{returnNotes(row)}</TableCell>
-                  </TableRow>
-                );
+              if (objectData.available === false) {
+                return;
               }
-              return null;
+
+              // Filter out objects visible for less than 15 minutes
+              const visibilityTime =
+                objectData.observationEnd - objectData.observationStart;
+              const minimumVisibilityTime = 15 * 60 * 1000; // 15 minutes
+              if (visibilityTime < minimumVisibilityTime) {
+                return;
+              }
+
+              return (
+                <TableRow key={row.nr}>
+                  <TableCell>
+                    <Checkbox />
+                  </TableCell>
+                  <TableCell>{returnObjectName(row)}</TableCell>
+                  <TableCell>{returnObjectType(row)}</TableCell>
+                  <TableCell>{returnDifficulty(row)}</TableCell>
+                  <TableCell>
+                    {returnVisibilityWindow(
+                      row,
+                      objectData,
+                      startTime,
+                      endTime
+                    )}
+                  </TableCell>
+                  <TableCell>{returnNotes(row)}</TableCell>
+                </TableRow>
+              );
             })}
           </TableBody>
         </Table>
