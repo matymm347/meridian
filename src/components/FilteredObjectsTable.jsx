@@ -9,6 +9,7 @@ import { TableBody } from "@mui/material";
 import wimmerTable from "./wimmerTable";
 import observationFilter from "./observationFilter";
 import Checkbox from "@mui/material/Checkbox";
+import { BorderColor } from "@mui/icons-material";
 
 function ObjectVisibilityLine({
   startTime,
@@ -142,8 +143,8 @@ function returnNotes(row) {
 
   const greatForBinocularsStyle = {
     ...commonStyle,
-    backgroundColor: "#E0F5F5",
-    color: "#58ACAD",
+    backgroundColor: "#58ACAD",
+    color: "#E0F5F5",
   };
 
   const binocularsNeededStyle = {
@@ -254,7 +255,9 @@ export default function FilteredObjectsTable({
                     </TableCell>
                     <TableCell>{returnObjectName(row)}</TableCell>
                     <TableCell>{returnObjectType(row)}</TableCell>
-                    <TableCell>{returnDifficulty(row)}</TableCell>
+                    <TableCell align="center">
+                      {returnDifficulty(row)}
+                    </TableCell>
                     <TableCell>
                       {returnVisibilityWindow(row, objectData)}
                     </TableCell>
