@@ -9,6 +9,8 @@ import wimmerTable from "./wimmerTable";
 import observationFilter from "./observationFilter";
 import Checkbox from "@mui/material/Checkbox";
 import ObjectVisibilityLine from "./ObjectVisibilityLine";
+import { DataGrid } from "@mui/x-data-grid";
+import Paper from "@mui/material/Paper";
 
 function returnObjectName(row) {
   const catalogPrefixes = [
@@ -26,7 +28,8 @@ function returnObjectName(row) {
   }
 }
 
-function returnObjectType(row) {
+function returnObjectType(prop) {
+  const { hasFocus, row } = prop;
   const style = {
     borderRadius: "15%",
     display: "inline-block",
@@ -45,7 +48,7 @@ function returnObjectType(row) {
     { key: "reflection_nebulae", prefix: "Reflection Nebulae" },
     { key: "planetary_nebulae", prefix: "Planetary Nebulae" },
   ];
-
+  console.log(row);
   const objectType = objectTypePrefixes.find(({ key }) => row[key] !== false);
   if (objectType) {
     return <div style={style}>{objectType.prefix}</div>;
@@ -191,67 +194,69 @@ export default function FilteredObjectsTable({
   startTime,
   endTime,
 }) {
+  const columns = [
+    { field: "id", headerName: "ID" },
+    { field: "name", headerName: "Name" },
+    {
+      field: "type",
+      headerName: "Type",
+      renderCell: returnObjectType,
+    },
+    {
+      field: "difficulty",
+      headerName: "Difficulty",
+    },
+    { field: "visibility", headerName: "Visibility Window" },
+    { field: "notes", headerName: "Notes" },
+  ];
+
+  const rows = wimmerTable
+    .map((row) => {
+      const objectData = observationFilter(
+        row.nr,
+        latitude,
+        longitude,
+        angle,
+        startTime,
+        endTime,
+        row.ra_number,
+        row.dec_number
+      );
+
+      if (objectData.available === false) {
+        return;
+      }
+      // Filter out objects visible for less than 15 minutes
+      const visibilityTime =
+        objectData.observationEnd - objectData.observationStart;
+      const minimumVisibilityTime = 15 * 60 * 1000; // 15 minutes
+      if (visibilityTime < minimumVisibilityTime) {
+        return;
+      }
+
+      return {
+        id: row.nr,
+        name: returnObjectName(row),
+        type: row,
+        difficulty: returnDifficulty(row),
+        visibility: returnVisibilityWindow(row, objectData, startTime, endTime),
+        notes: returnNotes(row),
+      };
+    })
+    .filter((row) => row !== undefined);
+
   return (
     <>
-      <TableContainer>
-        <Table>
-          <TableHead>
-            <TableRow>
-              <TableCell>Observed</TableCell>
-              <TableCell>Name</TableCell>
-              <TableCell>Type</TableCell>
-              <TableCell>Difficulty</TableCell>
-              <TableCell>Visibility Window</TableCell>
-              <TableCell>Notes</TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {wimmerTable.map((row) => {
-              const objectData = observationFilter(
-                row.nr,
-                latitude,
-                longitude,
-                angle,
-                startTime,
-                endTime,
-                row.ra_number,
-                row.dec_number
-              );
-              if (objectData.available === false) {
-                return;
-              }
-
-              // Filter out objects visible for less than 15 minutes
-              const visibilityTime =
-                objectData.observationEnd - objectData.observationStart;
-              const minimumVisibilityTime = 15 * 60 * 1000; // 15 minutes
-              if (visibilityTime < minimumVisibilityTime) {
-                return;
-              }
-
-              return (
-                <TableRow key={row.nr}>
-                  <TableCell>
-                    <Checkbox />
-                  </TableCell>
-                  <TableCell>{returnObjectName(row)}</TableCell>
-                  <TableCell>{returnObjectType(row)}</TableCell>
-                  <TableCell>{returnDifficulty(row)}</TableCell>
-                  <TableCell>
-                    {returnVisibilityWindow(
-                      row,
-                      objectData,
-                      startTime,
-                      endTime
-                    )}
-                  </TableCell>
-                  <TableCell>{returnNotes(row)}</TableCell>
-                </TableRow>
-              );
-            })}
-          </TableBody>
-        </Table>
-      </TableContainer>
+      <Paper sx={{ height: 400, width: "100%" }}>
+        <DataGrid
+          rows={rows}
+          columns={columns}
+          // initialState={{ pagination: { paginationModel } }}
+          // pageSizeOptions={[5, 10]}
+          // checkboxSelection
+          sx={{ border: 0 }}
+        />
+      </Paper>
     </>
   );
 }
