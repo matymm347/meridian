@@ -1,18 +1,151 @@
 import Box from "@mui/material/Box";
-import { TableContainer } from "@mui/material";
-import { Table } from "@mui/material";
-import { TableHead } from "@mui/material";
-import { TableRow } from "@mui/material";
-import { TableCell } from "@mui/material";
-import { TableBody } from "@mui/material";
 import wimmerTable from "./wimmerTable";
-import observationFilter from "./observationFilter";
-import Checkbox from "@mui/material/Checkbox";
 import ObjectVisibilityLine from "./ObjectVisibilityLine";
 import { DataGrid } from "@mui/x-data-grid";
 import Paper from "@mui/material/Paper";
+import { fontSize, margin, minWidth } from "@mui/system";
+import * as Astronomy from "astronomy-engine";
+import NoteBox from "./NoteBox";
+import { Note } from "@mui/icons-material";
+import { Button } from "@mui/material";
 
-function returnObjectName(row) {
+const objectNotesIds = [
+  "great_for_binoculars",
+  "binoculars_needed",
+  "large_size",
+  "best_at_high_magnification",
+  "iconic",
+  "group_friendly",
+];
+
+function observationFilter(
+  nr,
+  latitude,
+  longitude,
+  angle,
+  startTime,
+  endTime,
+  ra,
+  dec
+) {
+  const startTimeAstro = Astronomy.MakeTime(startTime);
+  const endTimeAstro = Astronomy.MakeTime(endTime);
+  const observer = new Astronomy.Observer(latitude, longitude, 0);
+
+  let dateForLastMidnight = new Date(startTime);
+  dateForLastMidnight.setUTCHours(0);
+  const lastMidnightTime = Astronomy.MakeTime(dateForLastMidnight);
+
+  Astronomy.DefineStar("Star1", ra, dec, 1000);
+
+  const startAz = Astronomy.Horizon(
+    startTimeAstro,
+    observer,
+    ra,
+    dec,
+    "normal"
+  );
+
+  const endAz = Astronomy.Horizon(endTimeAstro, observer, ra, dec, "normal");
+
+  const topAz = Astronomy.SearchHourAngle(
+    "Star1",
+    observer,
+    0,
+    lastMidnightTime,
+    1
+  );
+
+  const atTargetAngleAscend = Astronomy.SearchAltitude(
+    "Star1",
+    observer,
+    1,
+    lastMidnightTime,
+    1,
+    angle
+  );
+
+  let atTargetAngleDescend = Astronomy.SearchAltitude(
+    "Star1",
+    observer,
+    -1,
+    lastMidnightTime,
+    1,
+    angle
+  );
+
+  if (atTargetAngleDescend < atTargetAngleAscend) {
+    atTargetAngleDescend = Astronomy.SearchAltitude(
+      "Star1",
+      observer,
+      -1,
+      atTargetAngleAscend,
+      1,
+      angle
+    );
+  }
+
+  const objectData = {
+    available: false,
+    observationStart: null,
+    observationEnd: null,
+  };
+
+  // Object never cross target angle and never goes above it
+  if (
+    atTargetAngleAscend === null &&
+    atTargetAngleDescend === null &&
+    startAz.altitude < angle
+  ) {
+    return objectData;
+  }
+
+  // Object never cross target angle and is always above it
+  if (
+    atTargetAngleAscend === null &&
+    atTargetAngleDescend === null &&
+    startAz.altitude >= angle
+  ) {
+    objectData.available = true;
+    objectData.observationStart = startTime;
+    objectData.observationEnd = endTime;
+
+    return objectData;
+  }
+
+  // Test if star trail is within observation hours
+  if (
+    (atTargetAngleAscend < startTimeAstro &&
+      atTargetAngleDescend < startTimeAstro) ||
+    (atTargetAngleAscend > endTimeAstro && atTargetAngleDescend > endTimeAstro)
+  ) {
+    return objectData;
+  }
+
+  // Additional test for returned null value when star is always below given angle
+  if (atTargetAngleAscend === null || atTargetAngleDescend === null) {
+    return objectData;
+  }
+
+  objectData.available = true;
+
+  // Return available observation hours
+  if (atTargetAngleAscend < startTimeAstro) {
+    objectData.observationStart = startTimeAstro.date;
+  } else {
+    objectData.observationStart = atTargetAngleAscend.date;
+  }
+
+  if (atTargetAngleDescend > endTimeAstro) {
+    objectData.observationEnd = endTimeAstro.date;
+  } else {
+    objectData.observationEnd = atTargetAngleDescend.date;
+  }
+
+  return objectData;
+}
+
+function returnObjectName(params) {
   const catalogPrefixes = [
     { key: "messier", prefix: "M" },
     { key: "ngc", prefix: "NGC " },
@@ -20,21 +153,21 @@ function returnObjectName(row) {
     { key: "ic", prefix: "IC " },
   ];
 
-  const result = catalogPrefixes.find(({ key }) => row[key] !== null);
+  const result = catalogPrefixes.find(({ key }) => params.value[key] !== null);
   if (result) {
-    return `${result.prefix}${row[result.key]}`;
+    return `${result.prefix}${params.value[result.key]}`;
   } else {
     return "";
   }
 }
 
-function returnObjectType(prop) {
-  const { hasFocus, row } = prop;
+function returnObjectType(params) {
   const style = {
-    borderRadius: "15%",
-    display: "inline-block",
-    padding: "2px 13px",
-    fontWeight: "bold",
+    borderRadius: "8px",
+    padding: "2px 4px",
+    fontSize: "12px",
+    border: "1px solid blue",
+    margin: "1px",
   };
 
   const objectTypePrefixes = [
@@ -42,22 +175,29 @@ function returnObjectType(prop) {
     { key: "open_cluster", prefix: "Open Cluster" },
     { key: "globular_cluster", prefix: "Globular Cluster" },
     { key: "double_star", prefix: "Double Star" },
-    { key: "nebula", prefix: "Nebula" },
+    { key: "nebula", prefix: "Nebulae" },
     { key: "diffuse_nebulae", prefix: "Diffuse Nebulae" },
     { key: "emmision_nebulae", prefix: "Emmision Nebulae" },
     { key: "reflection_nebulae", prefix: "Reflection Nebulae" },
     { key: "planetary_nebulae", prefix: "Planetary Nebulae" },
   ];
-  console.log(row);
-  const objectType = objectTypePrefixes.find(({ key }) => row[key] !== false);
-  if (objectType) {
-    return <div style={style}>{objectType.prefix}</div>;
-  } else {
-    return "";
-  }
+
+  const objectType = objectTypePrefixes.filter(
+    ({ key }) => params.value[key] !== false
+  );
+
+  return (
+    <Box sx={{ display: "flex", flexDirection: "column" }}>
+      {objectType.map((type) => {
+        return <div style={style}>{type.prefix}</div>;
+      })}
+    </Box>
+  );
 }
 
-function returnDifficulty(row) {
+function returnDifficulty(params) {
+  const difficulty = params.value;
+
   const style = {
     width: "15px",
     height: "15px",
@@ -69,118 +209,45 @@ function returnDifficulty(row) {
   const mediumColor = "#FFA726";
   const hardColor = "#FF6B6B";
 
-  if (row.difficulty === 1) {
+  if (difficulty === 1) {
     style.backgroundColor = easyColor;
-  } else if (row.difficulty === 2) {
+  } else if (difficulty === 2) {
     style.backgroundColor = mediumColor;
-  } else if (row.difficulty === 3) {
+  } else if (difficulty === 3) {
     style.backgroundColor = hardColor;
   }
 
   return <div style={style}></div>;
 }
 
-function returnVisibilityWindow(row, objectData, startTime, endTime) {
+function returnVisibilityWindow(prop) {
   return (
     <>
       <Box>
-        {objectData.observationStart.toLocaleTimeString().slice(0, 5)}
-        {" - "}
-        {objectData.observationEnd.toLocaleTimeString().slice(0, 5)}
+        <Box>
+          {prop.value.objectData.observationStart
+            .toLocaleTimeString()
+            .slice(0, 5)}
+          {" - "}
+          {prop.value.objectData.observationEnd
+            .toLocaleTimeString()
+            .slice(0, 5)}
+        </Box>
+        <ObjectVisibilityLine
+          startTime={prop.value.startTime}
+          endTime={prop.value.endTime}
+          observationStart={prop.value.objectData.observationStart}
+          observationEnd={prop.value.objectData.observationEnd}
+        />
       </Box>
-      <ObjectVisibilityLine
-        startTime={startTime}
-        endTime={endTime}
-        observationStart={objectData.observationStart}
-        observationEnd={objectData.observationEnd}
-      />
     </>
   );
 }
 
-function returnNotes(row) {
-  const borderRadius = "5px";
-  const display = "inline-block";
-  const padding = "2px 10px";
-  const fontWeight = "bold";
-  const margin = "2px";
-
-  const commonStyle = {
-    borderRadius,
-    display,
-    padding,
-    fontWeight,
-    margin,
-  };
-
-  const greatForBinocularsStyle = {
-    ...commonStyle,
-    backgroundColor: "#58ACAD",
-    color: "#E0F5F5",
-  };
-
-  const binocularsNeededStyle = {
-    ...commonStyle,
-    backgroundColor: "#F8E1D4",
-    color: "#F28D6D",
-  };
-
-  const largeSizeStyle = {
-    ...commonStyle,
-    backgroundColor: "#D9F1E1",
-    color: "#72D1A6",
-  };
-
-  const bestAtHighMagnificationStyle = {
-    ...commonStyle,
-    backgroundColor: "#F5F1E0",
-    color: "#E0B940",
-  };
-
-  const iconicStyle = {
-    ...commonStyle,
-    backgroundColor: "#D1C8F5",
-    color: "#6A58E0",
-  };
-
-  const groupFriendlyStyle = {
-    ...commonStyle,
-    backgroundColor: "#F9E2F5",
-    color: "#D66DCB",
-  };
-
-  const objectNotesPrefixesStyles = [
-    {
-      key: "great_for_binoculars",
-      prefix: "Great for binoculars",
-      style: greatForBinocularsStyle,
-    },
-    {
-      key: "binoculars_needed",
-      prefix: "Binoculars required",
-      style: binocularsNeededStyle,
-    },
-    { key: "large_size", prefix: "Large size", style: largeSizeStyle },
-    {
-      key: "best_at_high_magnification",
-      prefix: "Best at hight magnification",
-      style: bestAtHighMagnificationStyle,
-    },
-    { key: "iconic", prefix: "Iconic", style: iconicStyle },
-    {
-      key: "group_friendly",
-      prefix: "Group friendly",
-      style: groupFriendlyStyle,
-    },
-  ];
-
-  const notesList = objectNotesPrefixesStyles.map((e) => {
-    if (row[e.key] === true) {
-      return (
-        <div key={e.key} style={e.style}>
-          {e.prefix}
-        </div>
-      );
+function returnNotes(params) {
+  const notesList = objectNotesIds.map((id) => {
+    if (params.value[id] === true) {
+      return <NoteBox key={id} id={id} />;
     }
   });
 
@@ -195,19 +262,40 @@ export default function FilteredObjectsTable({
   endTime,
 }) {
   const columns = [
-    { field: "id", headerName: "ID" },
-    { field: "name", headerName: "Name" },
+    {
+      field: "name",
+      headerName: "Name",
+      renderCell: returnObjectName,
+      sortable: false,
+    },
     {
       field: "type",
       headerName: "Type",
       renderCell: returnObjectType,
+      display: "flex",
     },
     {
       field: "difficulty",
       headerName: "Difficulty",
+      renderCell: returnDifficulty,
+      display: "flex",
+      headerAlign: "center",
     },
-    { field: "visibility", headerName: "Visibility Window" },
-    { field: "notes", headerName: "Notes" },
+    {
+      field: "visibility",
+      headerName: "Visibility Window",
+      renderCell: returnVisibilityWindow,
+      display: "flex",
+      width: 130,
+      sortable: false,
+    },
+    {
+      field: "notes",
+      headerName: "Notes",
+      renderCell: returnNotes,
+      display: "flex",
+      flex: 1,
+    },
   ];
 
   const rows = wimmerTable
@@ -236,25 +324,33 @@ export default function FilteredObjectsTable({
 
       return {
         id: row.nr,
-        name: returnObjectName(row),
+        name: row,
         type: row,
-        difficulty: returnDifficulty(row),
-        visibility: returnVisibilityWindow(row, objectData, startTime, endTime),
-        notes: returnNotes(row),
+        difficulty: row.difficulty,
+        visibility: { objectData, startTime, endTime },
+        notes: row,
       };
     })
     .filter((row) => row !== undefined);
 
   return (
     <>
-      <Paper sx={{ height: 400, width: "100%" }}>
+      <Box sx={{ margin: "20px" }}>
+        {objectNotesIds.map((id) => (
+          <Button size="small">
+            <NoteBox id={id} />
+          </Button>
+        ))}
+      </Box>
+      <Paper sx={{ height: 800, width: "100%" }}>
         <DataGrid
           rows={rows}
           columns={columns}
-          // initialState={{ pagination: { paginationModel } }}
-          // pageSizeOptions={[5, 10]}
-          // checkboxSelection
-          sx={{ border: 0 }}
+          sx={{
+            border: 0,
+          }}
+          pagination={false}
+          hideFooterPagination={false}
         />
       </Paper>
     </>
