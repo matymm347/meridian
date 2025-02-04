@@ -3,11 +3,11 @@ import wimmerTable from "./wimmerTable";
 import ObjectVisibilityLine from "./ObjectVisibilityLine";
 import { DataGrid } from "@mui/x-data-grid";
 import Paper from "@mui/material/Paper";
-import { fontSize, margin, minWidth } from "@mui/system";
 import * as Astronomy from "astronomy-engine";
 import NoteBox from "./NoteBox";
-import { Note } from "@mui/icons-material";
 import { Button } from "@mui/material";
+import React from "react";
+import PropTypes from "prop-types";
 
 const objectNotesIds = [
   "great_for_binoculars",
@@ -44,16 +44,6 @@ function observationFilter(
     ra,
     dec,
     "normal"
-  );
-
-  const endAz = Astronomy.Horizon(endTimeAstro, observer, ra, dec, "normal");
-
-  const topAz = Astronomy.SearchHourAngle(
-    "Star1",
-    observer,
-    0,
-    lastMidnightTime,
-    1
   );
 
   const atTargetAngleAscend = Astronomy.SearchAltitude(
@@ -189,7 +179,11 @@ function returnObjectType(params) {
   return (
     <Box sx={{ display: "flex", flexDirection: "column" }}>
       {objectType.map((type) => {
-        return <div style={style}>{type.prefix}</div>;
+        return (
+          <div key={type.key} style={style}>
+            {type.prefix}
+          </div>
+        );
       })}
     </Box>
   );
@@ -337,7 +331,7 @@ export default function FilteredObjectsTable({
     <>
       <Box sx={{ margin: "20px" }}>
         {objectNotesIds.map((id) => (
-          <Button size="small">
+          <Button key={id} size="small">
             <NoteBox id={id} />
           </Button>
         ))}
@@ -356,3 +350,11 @@ export default function FilteredObjectsTable({
     </>
   );
 }
+
+FilteredObjectsTable.propTypes = {
+  latitude: PropTypes.number.isRequired,
+  longitude: PropTypes.number.isRequired,
+  angle: PropTypes.number.isRequired,
+  startTime: PropTypes.instanceOf(Date).isRequired,
+  endTime: PropTypes.instanceOf(Date).isRequired,
+};
