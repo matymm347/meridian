@@ -29,6 +29,7 @@ A React-based tool for quickly finding astronomical objects based on your locati
    git clone https://github.com/your-username/meridian.git
    ```
 2. Install dependencies:
+
    ```bash
    npm install
    ```
@@ -37,7 +38,6 @@ A React-based tool for quickly finding astronomical objects based on your locati
    ```bash
    npm run dev
    ```
-
 
 ## 🪐 Future Improvements
 
