@@ -4,7 +4,9 @@ import { Button } from "./components/ui/button";
 function App() {
   return (
     <>
-      <Button>Test</Button>
+      <div className="bg-gray-600 p-20">
+        <Button>Test</Button>
+      </div>
     </>
   );
 }
