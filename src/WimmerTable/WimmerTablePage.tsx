@@ -1,106 +1,127 @@
-import MapView from "./MapView";
-import HoursSlider from "./HoursSlider";
-import FilteredObjectsTable from "./FilteredObjectsTable";
-import AngleSlider from "./AngleSlider";
+// import MapView from "./MapView";
+// import HoursSlider from "./HoursSlider";
+// import FilteredObjectsTable from "./FilteredObjectsTable";
+// import AngleSlider from "./AngleSlider";
 import { useEffect, useState } from "react";
 import * as maptilerClient from "@maptiler/client";
+import {
+  Command,
+  CommandDialog,
+  CommandEmpty,
+  CommandGroup,
+  CommandInput,
+  CommandItem,
+  CommandList,
+  CommandSeparator,
+  CommandShortcut,
+} from "@/components/ui/command";
+import type { GeocodingSearchResult } from "@maptiler/sdk";
 
 export default function WimmerTablePage() {
-  const [apiData, setApiData] = useState({});
-  const [placeName, setPlaceName] = useState("");
-  const [latitude, setLatitude] = useState(null);
-  const [longitude, setLongitude] = useState(null);
-  const [placesList, setPlacesList] = useState([]);
+  const [apiData, setApiData] = useState<GeocodingSearchResult | null>(null);
+  const [placeName, setPlaceName] = useState<string>("");
+  const [latitude, setLatitude] = useState<number | null>(null);
+  const [longitude, setLongitude] = useState<number | null>(null);
+  const [placesList, setPlacesList] = useState<string[]>([]);
   const [delayActive, setDelayActive] = useState(false);
   const [noOptionsText, setNoOptionsText] = useState("No options");
   const [mapWindowOpened, setMapWindowOpened] = useState(false);
-  const [startTime, setStartTime] = useState(null);
-  const [endTime, setEndTime] = useState(null);
-  const [angle, setAngle] = useState(null);
+  const [startTime, setStartTime] = useState<Date | null>(null);
+  const [endTime, setEndTime] = useState<Date | null>(null);
+  const [angle, setAngle] = useState<number | null>(null);
 
   maptilerClient.config.apiKey = import.meta.env.VITE_MAP_TILER_API_KEY;
 
-  function handleStartTimeUpdate(startTime) {
-    setStartTime(startTime);
-  }
+  // function handleStartTimeUpdate(startTime: Date) {
+  //   setStartTime(startTime);
+  // }
 
-  function handleEndTimeUpdate(endTime) {
-    setEndTime(endTime);
-  }
+  // function handleEndTimeUpdate(endTime: Date) {
+  //   setEndTime(endTime);
+  // }
 
-  async function updateCoordinates(lon, lat) {
-    setLatitude(lat);
-    setLongitude(lon);
+  // async function updateCoordinates(lon: number, lat: number) {
+  //   setLatitude(lat);
+  //   setLongitude(lon);
 
-    const data = await maptilerClient.geocoding.reverse([lon, lat]);
+  //   const data: GeocodingSearchResult = await maptilerClient.geocoding.reverse([
+  //     lon,
+  //     lat,
+  //   ]);
 
-    setApiData(data);
-    setPlaceName(data.features[0].context[1].text);
-  }
+  //   setApiData(data);
+  //   data.features?.[0]?.context?.[1]?.text &&
+  //     setPlaceName(data.features[0].context[1].text);
+  // }
 
-  async function handleGeolocationButton() {
-    if (!("geolocation" in navigator)) {
-      return;
-    }
+  // async function handleGeolocationButton() {
+  //   if (!("geolocation" in navigator)) {
+  //     return;
+  //   }
 
-    navigator.geolocation.getCurrentPosition(
-      async (position) => {
-        const browserLat = position.coords.latitude;
-        const browserLon = position.coords.longitude;
+  //   navigator.geolocation.getCurrentPosition(
+  //     async (position) => {
+  //       const browserLat = position.coords.latitude;
+  //       const browserLon = position.coords.longitude;
 
-        updateCoordinates(browserLon, browserLat);
-      },
-      (error) => {
-        switch (error.code) {
-          case error.PERMISSION_DENIED:
-            console.error("User denied the request for Geolocation.");
-            break;
-          case error.POSITION_UNAVAILABLE:
-            console.error("Location information is unavailable.");
-            break;
-          case error.TIMEOUT:
-            console.error("The request to get user location timed out.");
-            break;
-          default:
-            console.error("An unknown error occurred.");
-            break;
-        }
-      },
-      {
-        enableHighAccuracy: true,
-        timeout: 10000,
-        maximumAge: 0,
-      }
-    );
-  }
+  //       updateCoordinates(browserLon, browserLat);
+  //     },
+  //     (error) => {
+  //       switch (error.code) {
+  //         case error.PERMISSION_DENIED:
+  //           console.error("User denied the request for Geolocation.");
+  //           break;
+  //         case error.POSITION_UNAVAILABLE:
+  //           console.error("Location information is unavailable.");
+  //           break;
+  //         case error.TIMEOUT:
+  //           console.error("The request to get user location timed out.");
+  //           break;
+  //         default:
+  //           console.error("An unknown error occurred.");
+  //           break;
+  //       }
+  //     },
+  //     {
+  //       enableHighAccuracy: true,
+  //       timeout: 10000,
+  //       maximumAge: 0,
+  //     }
+  //   );
+  // }
 
-  function handleMapButton() {
-    setMapWindowOpened(true);
-  }
+  // function handleMapButton() {
+  //   setMapWindowOpened(true);
+  // }
 
-  function handleMapClose() {
-    setMapWindowOpened(false);
-  }
+  // function handleMapClose() {
+  //   setMapWindowOpened(false);
+  // }
 
-  function handlePlaceChange(value) {
-    const id = placesList.indexOf(value);
-    if (apiData.features[id]) {
-      setLongitude(apiData.features[id].geometry.coordinates[0]);
-      setLatitude(apiData.features[id].geometry.coordinates[1]);
-    }
-  }
+  // function handlePlaceChange(value: string) {
+  //   const id = placesList.indexOf(value);
+  //   if (apiData?.features[id]) {
+  //     const geometry = apiData.features[id].geometry;
 
-  function handleLatFieldChange(event) {
-    setLatitude(Number(event.target.value));
-  }
+  //     if (geometry.type === "Point") {
+  //       const [lon, lat] = geometry.coordinates;
+  //       setLongitude(lon);
+  //       setLatitude(lat);
+  //     }
+  //   }
+  // }
 
-  function handleLonFieldChange(event) {
-    setLongitude(Number(event.target.value));
-  }
+  // function handleLatFieldChange(event) {
+  //   setLatitude(Number(event.target.value));
+  // }
 
-  function handleAngleChange(angle) {
-    setAngle(Number(angle));
-  }
+  // function handleLonFieldChange(event) {
+  //   setLongitude(Number(event.target.value));
+  // }
+
+  // function handleAngleChange(angle) {
+  //   setAngle(Number(angle));
+  // }
 
   useEffect(() => {
     if (delayActive === true) {
@@ -124,9 +145,12 @@ export default function WimmerTablePage() {
 
         setApiData(data);
         const places = data.features.map((feature) => {
-          return `${feature.place_name}, ${feature.context[2].text}`;
+          if (feature?.context?.[2].text) {
+            return `${feature.place_name}, ${feature.context[2].text}`;
+          }
         });
-        setPlacesList(places);
+        // Flter undefined values
+        setPlacesList(places.filter((p): p is string => p !== undefined));
       } catch (error) {
         console.log("Error during fetch", error);
         setNoOptionsText("Connection error");
@@ -138,149 +162,24 @@ export default function WimmerTablePage() {
     return () => clearTimeout(timer);
   }, [placeName]);
 
+  function handleInputChange(value: string) {
+    setPlaceName(value);
+  }
+
   return (
     <>
-      <Box
-        sx={{
-          display: "flex",
-          flexDirection: "column",
-          alignItems: "center",
-        }}
-      >
-        <Box
-          sx={{
-            display: "flex",
-            flexWrap: "wrap",
-            width: "100%",
-            maxWidth: "800px",
-          }}
-        >
-          <Box
-            sx={{
-              display: "flex",
-              flexGrow: 1,
-              maxWidth: 600,
-            }}
-          >
-            <Autocomplete
-              onChange={(event, value) => handlePlaceChange(value)}
-              fullWidth={true}
-              onInputChange={(event, place) => setPlaceName(place)}
-              filterOptions={(x) => x} // disable built-in filtering
-              options={placesList}
-              renderInput={(params) => (
-                <TextField {...params} label="Search location" />
-              )}
-              value={placeName}
-              loading={delayActive}
-              noOptionsText={noOptionsText}
-            />
-
-            <IconButton
-              sx={{ width: 40, height: 40, alignSelf: "center" }}
-              aria-label="locate me"
-              onClick={handleGeolocationButton}
-            >
-              <MyLocationIcon />
-            </IconButton>
-          </Box>
-
-          <Button
-            sx={{ alignSelf: "center" }}
-            variant="outlined"
-            aria-label="open map"
-            onClick={handleMapButton}
-          >
-            Select on map
-            <MapIcon sx={{ marginLeft: "10px" }} />
-          </Button>
-        </Box>
-        <br />
-        <Box sx={{ display: "flex", gap: "10px" }}>
-          <TextField
-            sx={{ maxWidth: "200px" }}
-            id="longitude"
-            label={"Longitude"}
-            size="small"
-            variant="standard"
-            value={longitude ?? ""}
-            onChange={(event) => handleLonFieldChange(event)}
-            slotProps={{
-              inputLabel: {
-                shrink: !!longitude || longitude === 0,
-              },
-            }}
-          />
-          <TextField
-            sx={{ maxWidth: "200px" }}
-            id="latitude"
-            label={"Latitude"}
-            size="small"
-            variant="standard"
-            value={latitude ?? ""}
-            onChange={(event) => handleLatFieldChange(event)}
-            slotProps={{
-              inputLabel: {
-                shrink: !!latitude || latitude === 0,
-              },
-            }}
-          />
-          <br />
-        </Box>
-        <MapView
-          // center map on Wroclaw by default
-          lon={longitude === null ? 17.0385 : longitude}
-          lat={latitude === null ? 51.1079 : latitude}
-          opened={mapWindowOpened}
-          onClose={handleMapClose}
-          updateCoordinates={updateCoordinates}
+      <Command>
+        <CommandInput
+          placeholder="Search location..."
+          onValueChange={handleInputChange}
         />
-        <br />
-        <p>Observation hours:</p>
-        {longitude === null || latitude === null ? (
-          <Box sx={{ width: "100%" }}>
-            <Slider
-              disabled={true}
-              getAriaLabel={() => "Observation hours"}
-              value={[500, 1000]}
-              valueLabelDisplay={"off"}
-              min={0}
-              max={1440}
-              sx={{
-                "& .MuiSlider-rail": {
-                  background: "grey",
-                  opacity: 1, // Ensure the rail is fully opaque
-                  height: 20,
-                },
-              }}
-            />
-          </Box>
-        ) : (
-          <HoursSlider
-            latitude={latitude}
-            longitude={longitude}
-            inactive={longitude === null || latitude === null ? true : false}
-            handleStartTimeUpdate={handleStartTimeUpdate}
-            handleEndTimeUpdate={handleEndTimeUpdate}
-          />
-        )}
-        <p>Minimum altitude:</p>
-        <AngleSlider
-          inactive={longitude === null || latitude === null ? true : false}
-          handleAngleChange={handleAngleChange}
-        />
-        {startTime !== null && endTime !== null && angle !== null && (
-          <>
-            <FilteredObjectsTable
-              latitude={latitude}
-              longitude={longitude}
-              angle={angle}
-              startTime={startTime}
-              endTime={endTime}
-            />
-          </>
-        )}
-      </Box>
+        <CommandList>
+          <CommandEmpty>No results found.</CommandEmpty>
+          {placesList.map((place) => {
+            return <CommandItem>{place}</CommandItem>;
+          })}
+        </CommandList>
+      </Command>
     </>
   );
 }

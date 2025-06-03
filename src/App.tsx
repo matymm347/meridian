@@ -1,11 +1,11 @@
 import "./App.css";
-import { Button } from "./components/ui/button";
+import WimmerTablePage from "./WimmerTable/WimmerTablePage";
 
 function App() {
   return (
     <>
       <div className="bg-gray-600 p-20">
-        <Button>Test</Button>
+        <WimmerTablePage />
       </div>
     </>
   );
