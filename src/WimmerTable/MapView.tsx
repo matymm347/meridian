@@ -1,10 +1,34 @@
 import "@maptiler/sdk/dist/maptiler-sdk.css";
 import * as maptilersdk from "@maptiler/sdk";
-import { useEffect, useRef } from "react";
+import { useEffect, useState } from "react";
+import { Button } from "@/components/ui/button";
+import {
+  Dialog,
+  DialogClose,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
 
 maptilersdk.config.apiKey = import.meta.env.VITE_MAP_TILER_API_KEY;
 
-function Map({ lon, lat, opened, updateCoordinates }) {
+type MapProps = {
+  lon: number;
+  lat: number;
+  opened: boolean;
+  updateCoordinates: (lon: number, lat: number) => void;
+};
+
+type MapViewProps = {
+  lon: number;
+  lat: number;
+  updateCoordinates: (lon: number, lat: number) => void;
+};
+
+function Map({ lon, lat, opened, updateCoordinates }: MapProps) {
   useEffect(() => {
     if (!opened) return;
 
@@ -22,45 +46,56 @@ function Map({ lon, lat, opened, updateCoordinates }) {
       updateCoordinates(e.lngLat.lng, e.lngLat.lat);
     });
   }, []);
+
+  return null;
 }
 
-export default function MapView({
-  lon,
-  lat,
-  opened,
-  onClose,
-  updateCoordinates,
-}) {
+export default function MapView({ lon, lat, updateCoordinates }: MapViewProps) {
+  const [opened, setOpened] = useState<boolean>(false);
+
+  function handleButtonClick() {
+    opened ? setOpened(false) : setOpened(true);
+  }
+
   return (
     <>
-      <Dialog open={opened} onClose={onClose} maxWidth={false}>
-        <DialogTitle>Select point on map</DialogTitle>
-        <div
-          style={{
-            position: "relative",
-            height: "80vh",
-            width: "80vw",
-            maxWidth: "1000px",
-            maxHeight: "750px",
-          }}
-        >
-          <div
-            id="map-view"
-            style={{
-              position: "absolute",
-              top: 0,
-              bottom: 0,
-              width: "100%",
-              height: "100%",
-            }}
-          ></div>
-        </div>
-        <Map
-          lon={lon}
-          lat={lat}
-          opened={opened}
-          updateCoordinates={updateCoordinates}
-        />
+      <Dialog>
+        <DialogTrigger asChild>
+          <Button variant="outline" onClick={handleButtonClick}>
+            Open Dialog
+          </Button>
+        </DialogTrigger>
+        <DialogContent className="h-[80vh] w-[80vw] max-w-[1000px] max-h-[750px]">
+          <DialogHeader>
+            <DialogTitle>Edit profile</DialogTitle>
+            <DialogDescription>
+              Make changes to your profile here. Click save when you&apos;re
+              done.
+            </DialogDescription>
+          </DialogHeader>
+          <div>
+            <div
+              id="map-view"
+              className="absolute top-0 bottom-0 w-full h-full"
+            ></div>
+          </div>
+          <Map
+            lon={lon}
+            lat={lat}
+            opened={opened}
+            updateCoordinates={updateCoordinates}
+          />
+          <DialogFooter>
+            <DialogClose asChild>
+              <Button variant="outline" onClick={handleButtonClick}>
+                Cancel
+              </Button>
+            </DialogClose>
+            <Button type="submit" onClick={handleButtonClick}>
+              Save
+            </Button>
+          </DialogFooter>
+        </DialogContent>
       </Dialog>
     </>
   );

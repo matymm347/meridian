@@ -1,21 +1,13 @@
-// import MapView from "./MapView";
+import MapView from "./MapView";
 // import HoursSlider from "./HoursSlider";
 // import FilteredObjectsTable from "./FilteredObjectsTable";
 // import AngleSlider from "./AngleSlider";
 import { useEffect, useState } from "react";
 import * as maptilerClient from "@maptiler/client";
-import {
-  Command,
-  CommandDialog,
-  CommandEmpty,
-  CommandGroup,
-  CommandInput,
-  CommandItem,
-  CommandList,
-  CommandSeparator,
-  CommandShortcut,
-} from "@/components/ui/command";
+import SearchBar from "./SearchBar";
 import type { GeocodingSearchResult } from "@maptiler/sdk";
+import LocationIcon from "@/components/ui/locationIcon";
+import { Button } from "@/components/ui/button";
 
 export default function WimmerTablePage() {
   const [apiData, setApiData] = useState<GeocodingSearchResult | null>(null);
@@ -40,63 +32,63 @@ export default function WimmerTablePage() {
   //   setEndTime(endTime);
   // }
 
-  // async function updateCoordinates(lon: number, lat: number) {
-  //   setLatitude(lat);
-  //   setLongitude(lon);
+  async function updateCoordinates(lon: number, lat: number) {
+    setLatitude(lat);
+    setLongitude(lon);
 
-  //   const data: GeocodingSearchResult = await maptilerClient.geocoding.reverse([
-  //     lon,
-  //     lat,
-  //   ]);
+    const data: GeocodingSearchResult = await maptilerClient.geocoding.reverse([
+      lon,
+      lat,
+    ]);
 
-  //   setApiData(data);
-  //   data.features?.[0]?.context?.[1]?.text &&
-  //     setPlaceName(data.features[0].context[1].text);
-  // }
+    setApiData(data);
+    data.features?.[0]?.context?.[1]?.text &&
+      setPlaceName(data.features[0].context[1].text);
+  }
 
-  // async function handleGeolocationButton() {
-  //   if (!("geolocation" in navigator)) {
-  //     return;
-  //   }
+  async function handleGeolocationButton() {
+    if (!("geolocation" in navigator)) {
+      return;
+    }
 
-  //   navigator.geolocation.getCurrentPosition(
-  //     async (position) => {
-  //       const browserLat = position.coords.latitude;
-  //       const browserLon = position.coords.longitude;
+    navigator.geolocation.getCurrentPosition(
+      async (position) => {
+        const browserLat = position.coords.latitude;
+        const browserLon = position.coords.longitude;
 
-  //       updateCoordinates(browserLon, browserLat);
-  //     },
-  //     (error) => {
-  //       switch (error.code) {
-  //         case error.PERMISSION_DENIED:
-  //           console.error("User denied the request for Geolocation.");
-  //           break;
-  //         case error.POSITION_UNAVAILABLE:
-  //           console.error("Location information is unavailable.");
-  //           break;
-  //         case error.TIMEOUT:
-  //           console.error("The request to get user location timed out.");
-  //           break;
-  //         default:
-  //           console.error("An unknown error occurred.");
-  //           break;
-  //       }
-  //     },
-  //     {
-  //       enableHighAccuracy: true,
-  //       timeout: 10000,
-  //       maximumAge: 0,
-  //     }
-  //   );
-  // }
+        updateCoordinates(browserLon, browserLat);
+      },
+      (error) => {
+        switch (error.code) {
+          case error.PERMISSION_DENIED:
+            console.error("User denied the request for Geolocation.");
+            break;
+          case error.POSITION_UNAVAILABLE:
+            console.error("Location information is unavailable.");
+            break;
+          case error.TIMEOUT:
+            console.error("The request to get user location timed out.");
+            break;
+          default:
+            console.error("An unknown error occurred.");
+            break;
+        }
+      },
+      {
+        enableHighAccuracy: true,
+        timeout: 10000,
+        maximumAge: 0,
+      }
+    );
+  }
 
-  // function handleMapButton() {
-  //   setMapWindowOpened(true);
-  // }
+  function handleMapButton() {
+    setMapWindowOpened(true);
+  }
 
-  // function handleMapClose() {
-  //   setMapWindowOpened(false);
-  // }
+  function handleMapClose() {
+    setMapWindowOpened(false);
+  }
 
   // function handlePlaceChange(value: string) {
   //   const id = placesList.indexOf(value);
@@ -123,63 +115,18 @@ export default function WimmerTablePage() {
   //   setAngle(Number(angle));
   // }
 
-  useEffect(() => {
-    if (delayActive === true) {
-      return;
-    }
-
-    if (placeName.length < 4) {
-      setPlacesList([]);
-      return;
-    }
-
-    const timer = setTimeout(async () => {
-      setDelayActive(true);
-      setNoOptionsText("No options");
-
-      // clear out options list in case any error occur during fetch to not confuse user
-      setPlacesList([]);
-
-      try {
-        const data = await maptilerClient.geocoding.forward(placeName);
-
-        setApiData(data);
-        const places = data.features.map((feature) => {
-          if (feature?.context?.[2].text) {
-            return `${feature.place_name}, ${feature.context[2].text}`;
-          }
-        });
-        // Flter undefined values
-        setPlacesList(places.filter((p): p is string => p !== undefined));
-      } catch (error) {
-        console.log("Error during fetch", error);
-        setNoOptionsText("Connection error");
-      }
-
-      setDelayActive(false);
-    }, 500);
-
-    return () => clearTimeout(timer);
-  }, [placeName]);
-
-  function handleInputChange(value: string) {
-    setPlaceName(value);
-  }
-
   return (
     <>
-      <Command>
-        <CommandInput
-          placeholder="Search location..."
-          onValueChange={handleInputChange}
-        />
-        <CommandList>
-          <CommandEmpty>No results found.</CommandEmpty>
-          {placesList.map((place) => {
-            return <CommandItem>{place}</CommandItem>;
-          })}
-        </CommandList>
-      </Command>
+      <SearchBar />
+      <Button onClick={handleGeolocationButton}>
+        <LocationIcon />
+      </Button>
+      <MapView
+        // center map on Wroclaw by default
+        lon={longitude === null ? 17.0385 : longitude}
+        lat={latitude === null ? 51.1079 : latitude}
+        updateCoordinates={updateCoordinates}
+      />
     </>
   );
 }
