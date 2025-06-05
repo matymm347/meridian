@@ -13,14 +13,20 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
+import type { GeocodingSearchResult } from "@maptiler/sdk";
 
-export default function SearchBar() {
+type SearchBarProps = {
+  updateCoordinates: (lon: number, lat: number) => void;
+};
+
+export default function SearchBar({ updateCoordinates }: SearchBarProps) {
   const [placeName, setPlaceName] = useState<string>("");
   const [chosenPlaceName, setChosenPlaceName] = useState<string>("");
   const [placesList, setPlacesList] = useState<string[]>([]);
   const [delayActive, setDelayActive] = useState(false);
   const [noOptionsText, setNoOptionsText] = useState("No options");
   const [open, setOpen] = useState<boolean>(false);
+  const [apiData, setApiData] = useState<GeocodingSearchResult | null>(null);
 
   maptilerClient.config.apiKey = import.meta.env.VITE_MAP_TILER_API_KEY;
 
@@ -44,6 +50,7 @@ export default function SearchBar() {
 
       try {
         const data = await maptilerClient.geocoding.forward(placeName);
+        setApiData(data);
 
         const places = data.features.map((feature) => {
           if (feature?.context?.[2].text) {
@@ -65,6 +72,18 @@ export default function SearchBar() {
 
   function handleInputChange(value: string) {
     setPlaceName(value);
+  }
+
+  function handlePlaceChange(value: string) {
+    const id = placesList.indexOf(value);
+    if (apiData?.features[id]) {
+      const geometry = apiData.features[id].geometry;
+
+      if (geometry.type === "Point") {
+        const [lon, lat] = geometry.coordinates;
+        updateCoordinates(lon, lat);
+      }
+    }
   }
 
   return (
@@ -94,6 +113,7 @@ export default function SearchBar() {
                     className="max-w-[400px]"
                     onSelect={(value) => {
                       setChosenPlaceName(value);
+                      handlePlaceChange(value);
                       setOpen(false);
                     }}
                   >

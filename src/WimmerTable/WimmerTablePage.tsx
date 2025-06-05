@@ -90,19 +90,6 @@ export default function WimmerTablePage() {
     setMapWindowOpened(false);
   }
 
-  // function handlePlaceChange(value: string) {
-  //   const id = placesList.indexOf(value);
-  //   if (apiData?.features[id]) {
-  //     const geometry = apiData.features[id].geometry;
-
-  //     if (geometry.type === "Point") {
-  //       const [lon, lat] = geometry.coordinates;
-  //       setLongitude(lon);
-  //       setLatitude(lat);
-  //     }
-  //   }
-  // }
-
   // function handleLatFieldChange(event) {
   //   setLatitude(Number(event.target.value));
   // }
@@ -117,7 +104,10 @@ export default function WimmerTablePage() {
 
   return (
     <>
-      <SearchBar />
+      <p className="text-white">
+        Lat: {latitude} Lon: {longitude}
+      </p>
+      <SearchBar updateCoordinates={updateCoordinates} />
       <Button onClick={handleGeolocationButton}>
         <LocationIcon />
       </Button>
