@@ -8,6 +8,7 @@ import SearchBar from "./SearchBar";
 import type { GeocodingSearchResult } from "@maptiler/sdk";
 import LocationIcon from "@/components/ui/locationIcon";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 
 export default function WimmerTablePage() {
   const [apiData, setApiData] = useState<GeocodingSearchResult | null>(null);
@@ -117,6 +118,11 @@ export default function WimmerTablePage() {
         lat={latitude === null ? 51.1079 : latitude}
         updateCoordinates={updateCoordinates}
       />
+      <Input
+        placeholder="Longitude"
+        defaultValue={longitude?.toFixed(4) ?? ""}
+      />
+      <Input placeholder="Latitude" defaultValue={latitude?.toFixed(4) ?? ""} />
     </>
   );
 }
