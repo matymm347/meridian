@@ -1,4 +1,3 @@
-import PropTypes from "prop-types";
 import Box from "@mui/material/Box";
 import Slider from "@mui/material/Slider";
 import { useEffect, useState } from "react";
@@ -9,15 +8,20 @@ const nauticalDuskColor = "#273C99";
 const civilDuskColor = "#3B54A7";
 const dayColor = "#9774B4";
 
+type HoursSliderProps = {
+  latitude: number;
+  longitude: number;
+  handleStartTimeUpdate: (startTime: Date) => void;
+  handleEndTimeUpdate: (endTime: Date) => void;
+};
+
 export default function HoursSlider({
   latitude,
   longitude,
-  height,
   handleStartTimeUpdate,
   handleEndTimeUpdate,
-}) {
-  const [value, setValue] = useState([500, 1000]);
-  const [atDefaultState, setAtDefaultState] = useState(true);
+}: HoursSliderProps) {
+  const [value, setValue] = useState<number | number[]>([500, 1000]);
 
   const observer = new Astronomy.Observer(latitude, longitude, 0);
   const time = new Date();
@@ -31,14 +35,20 @@ export default function HoursSlider({
     1
   ).time.date;
 
-  let sliderMidnight = solarMidnight.toString();
-  sliderMidnight = sliderMidnight.slice(16, 21);
-  sliderMidnight = timeToMinutes(sliderMidnight);
+  let sliderMidnightString = solarMidnight.toString();
+  sliderMidnightString = sliderMidnightString.slice(16, 21);
+  const sliderMidnight = Number(timeToMinutes(sliderMidnightString));
 
   const eventTimes = calculateTimeBlocks();
 
   const railBackgroundStyle = () => {
-    const sunEq = Astronomy.Equator("Sun", time, observer, false, false);
+    const sunEq = Astronomy.Equator(
+      Astronomy.Body.Sun,
+      time,
+      observer,
+      false,
+      false
+    );
     const sunPosition = Astronomy.Horizon(
       time,
       observer,
@@ -217,16 +227,16 @@ export default function HoursSlider({
     return eventTimes;
   }
 
-  const handleChange = (event, newValue) => {
+  const handleChange = (newValue: number | number[]) => {
     setValue(newValue);
   };
 
-  function timeToMinutes(timeStr) {
+  function timeToMinutes(timeStr: string) {
     const [hours, minutes] = timeStr.split(":").map(Number);
     return hours * 60 + minutes;
   }
 
-  const valueLabelFormat = (value, index) => {
+  const valueLabelFormat = (value: number) => {
     // center on sliderMidnight
     value = value + 720 + sliderMidnight;
     if (value > 1440) {
@@ -235,9 +245,10 @@ export default function HoursSlider({
 
     let hours = Math.floor(value / 60);
     let minutes = value % 60;
+    let minutesString = "";
     // add leading 0
     if (minutes < 10) {
-      minutes = `0${minutes}`;
+      minutesString = `0${minutes}`;
     }
 
     // reset counter after midnight
@@ -245,11 +256,13 @@ export default function HoursSlider({
       hours -= 25;
     }
 
-    return `${hours}:${minutes}`;
+    return `${hours}:${minutesString}`;
   };
 
-  const handleChangeCommited = (event, value) => {
-    setAtDefaultState(false);
+  const handleChangeCommited = (value: number | number[]) => {
+    if (!Array.isArray(value)) {
+      return;
+    }
     for (let index = 0; index < value.length; index++) {
       let crossingMidnight = false;
 
@@ -263,16 +276,17 @@ export default function HoursSlider({
 
       let hours = Math.floor(newValue / 60);
       let minutes = newValue % 60;
+      let minutesString = "";
       // add leading 0
       if (minutes < 10) {
-        minutes = `0${minutes}`;
+        minutesString = `0${minutes}`;
       }
 
       if (crossingMidnight) {
         time.setDate(time.getDate() + 1);
       }
 
-      time.setHours(hours, minutes, 0, 0);
+      time.setHours(hours, Number(minutesString), 0, 0);
 
       if (index === 0) {
         handleStartTimeUpdate(time);
@@ -283,7 +297,9 @@ export default function HoursSlider({
   };
 
   useEffect(() => {
-    handleChangeCommited(null, value);
+    if (Array.isArray(value) && value.every((x) => typeof x === "number")) {
+      handleChangeCommited(value);
+    }
   }, []);
 
   return (
@@ -291,8 +307,8 @@ export default function HoursSlider({
       <Slider
         getAriaLabel={() => "Observation hours"}
         value={value}
-        onChange={handleChange}
-        onChangeCommitted={handleChangeCommited}
+        onChange={(_event, value, _activeThumb) => handleChange(value)}
+        onChangeCommitted={(_event, value) => handleChangeCommited(value)}
         valueLabelDisplay={"on"}
         min={0}
         max={1440}
@@ -359,8 +375,3 @@ export default function HoursSlider({
     </Box>
   );
 }
-
-HoursSlider.propTypes = {
-  latitude: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
-  longitude: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
-};

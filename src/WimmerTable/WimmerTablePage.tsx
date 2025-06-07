@@ -2,45 +2,47 @@ import { Autocomplete, Box, Button, IconButton } from "@mui/material";
 import MyLocationIcon from "@mui/icons-material/MyLocation";
 import MapIcon from "@mui/icons-material/Map";
 import TextField from "@mui/material/TextField";
-import MapView from "../../components/MapView";
-import HoursSlider from "../../components/HoursSlider";
-import FilteredObjectsTable from "../../components/FilteredObjectsTable";
+import MapView from "./MapView";
+import HoursSlider from "./HoursSlider";
+import FilteredObjectsTable from "./FilteredObjectsTable";
 import Slider from "@mui/material/Slider";
-import AngleSlider from "../../components/AngleSlider";
+import AngleSlider from "./AngleSlider";
 import { useEffect, useState } from "react";
 import * as maptilerClient from "@maptiler/client";
+import type { GeocodingSearchResult } from "@maptiler/sdk";
 
 export default function WimmerTablePage() {
-  const [apiData, setApiData] = useState({});
+  const [apiData, setApiData] = useState<GeocodingSearchResult | null>(null);
   const [placeName, setPlaceName] = useState("");
-  const [latitude, setLatitude] = useState(null);
-  const [longitude, setLongitude] = useState(null);
-  const [placesList, setPlacesList] = useState([]);
+  const [latitude, setLatitude] = useState<number | null>(null);
+  const [longitude, setLongitude] = useState<number | null>(null);
+  const [placesList, setPlacesList] = useState<string[]>([]);
   const [delayActive, setDelayActive] = useState(false);
   const [noOptionsText, setNoOptionsText] = useState("No options");
   const [mapWindowOpened, setMapWindowOpened] = useState(false);
-  const [startTime, setStartTime] = useState(null);
-  const [endTime, setEndTime] = useState(null);
-  const [angle, setAngle] = useState(null);
+  const [startTime, setStartTime] = useState<Date | null>(null);
+  const [endTime, setEndTime] = useState<Date | null>(null);
+  const [angle, setAngle] = useState<number | null>(null);
 
   maptilerClient.config.apiKey = import.meta.env.VITE_MAP_TILER_API_KEY;
 
-  function handleStartTimeUpdate(startTime) {
+  function handleStartTimeUpdate(startTime: Date) {
     setStartTime(startTime);
   }
 
-  function handleEndTimeUpdate(endTime) {
+  function handleEndTimeUpdate(endTime: Date) {
     setEndTime(endTime);
   }
 
-  async function updateCoordinates(lon, lat) {
+  async function updateCoordinates(lon: number, lat: number) {
     setLatitude(lat);
     setLongitude(lon);
 
     const data = await maptilerClient.geocoding.reverse([lon, lat]);
 
     setApiData(data);
-    setPlaceName(data.features[0].context[1].text);
+    data?.features?.[0]?.context?.[1]?.text &&
+      setPlaceName(data.features[0].context[1].text);
   }
 
   async function handleGeolocationButton() {
@@ -87,23 +89,32 @@ export default function WimmerTablePage() {
     setMapWindowOpened(false);
   }
 
-  function handlePlaceChange(value) {
-    const id = placesList.indexOf(value);
-    if (apiData.features[id]) {
-      setLongitude(apiData.features[id].geometry.coordinates[0]);
-      setLatitude(apiData.features[id].geometry.coordinates[1]);
-    }
-  }
+  // function handlePlaceChange(value: string) {
+  //   const id = placesList.indexOf(value);
+  //   if (apiData?.features?.[id]) {
+  //     const geometry = apiData.features[id].geometry;
 
-  function handleLatFieldChange(event) {
+  //     if (geometry.type === "Point") {
+  //       const [lon, lat] = geometry.coordinates;
+  //       setLongitude(lon);
+  //       setLatitude(lat);
+  //     }
+  //   }
+  // }
+
+  function handleLatFieldChange(
+    event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) {
     setLatitude(Number(event.target.value));
   }
 
-  function handleLonFieldChange(event) {
+  function handleLonFieldChange(
+    event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) {
     setLongitude(Number(event.target.value));
   }
 
-  function handleAngleChange(angle) {
+  function handleAngleChange(angle: number) {
     setAngle(Number(angle));
   }
 
@@ -129,9 +140,11 @@ export default function WimmerTablePage() {
 
         setApiData(data);
         const places = data.features.map((feature) => {
-          return `${feature.place_name}, ${feature.context[2].text}`;
+          if (feature?.context?.[2]?.text) {
+            return `${feature.place_name}, ${feature.context[2].text}`;
+          }
         });
-        setPlacesList(places);
+        setPlacesList(places.filter((p): p is string => p !== undefined));
       } catch (error) {
         console.log("Error during fetch", error);
         setNoOptionsText("Connection error");
@@ -168,9 +181,8 @@ export default function WimmerTablePage() {
             }}
           >
             <Autocomplete
-              onChange={(event, value) => handlePlaceChange(value)}
               fullWidth={true}
-              onInputChange={(event, place) => setPlaceName(place)}
+              onInputChange={(_event, place) => setPlaceName(place)}
               filterOptions={(x) => x} // disable built-in filtering
               options={placesList}
               renderInput={(params) => (
@@ -264,7 +276,6 @@ export default function WimmerTablePage() {
           <HoursSlider
             latitude={latitude}
             longitude={longitude}
-            inactive={longitude === null || latitude === null ? true : false}
             handleStartTimeUpdate={handleStartTimeUpdate}
             handleEndTimeUpdate={handleEndTimeUpdate}
           />
