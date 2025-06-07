@@ -1,20 +1,24 @@
 import { useEffect, useState } from "react";
 import * as Astronomy from "astronomy-engine";
+import { Slider } from "@/components/ui/slider";
 
 const astroDuskColor = "#21215A";
 const nauticalDuskColor = "#273C99";
 const civilDuskColor = "#3B54A7";
 const dayColor = "#9774B4";
 
+type HoursSliderProps = {
+  latitude: number | null;
+  longitude: number | null;
+  handleObservationTimeUpdate: (start: Date, end: Date) => void;
+};
+
 export default function HoursSlider({
   latitude,
   longitude,
-  height,
-  handleStartTimeUpdate,
-  handleEndTimeUpdate,
-}) {
+  handleObservationTimeUpdate,
+}: HoursSliderProps) {
   const [value, setValue] = useState([500, 1000]);
-  const [atDefaultState, setAtDefaultState] = useState(true);
 
   const observer = new Astronomy.Observer(latitude, longitude, 0);
   const time = new Date();
@@ -246,7 +250,6 @@ export default function HoursSlider({
   };
 
   const handleChangeCommited = (event, value) => {
-    setAtDefaultState(false);
     for (let index = 0; index < value.length; index++) {
       let crossingMidnight = false;
 
@@ -284,75 +287,78 @@ export default function HoursSlider({
   }, []);
 
   return (
-    <Box sx={{ width: "100%" }}>
-      <Slider
-        getAriaLabel={() => "Observation hours"}
-        value={value}
-        onChange={handleChange}
-        onChangeCommitted={handleChangeCommited}
-        valueLabelDisplay={"on"}
-        min={0}
-        max={1440}
-        valueLabelFormat={valueLabelFormat}
-        sx={railBackgroundStyle}
-      />
-      <Box
-        id="hours-slider-legend"
-        sx={{ display: "flex", justifyContent: "center" }}
-      >
-        <Box sx={{ alignSelf: "center", display: "flex", margin: "10px" }}>
-          <div
-            style={{
-              width: "15px",
-              height: "15px",
-              borderRadius: "50%",
-              backgroundColor: astroDuskColor,
-              alignSelf: "center",
-              margin: "5px",
-            }}
-          ></div>
-          <p style={{ color: "#999", fontSize: "10px" }}>Astro Dark</p>
-        </Box>
-        <Box sx={{ alignSelf: "center", display: "flex", margin: "10px" }}>
-          <div
-            style={{
-              width: "15px",
-              height: "15px",
-              borderRadius: "50%",
-              backgroundColor: nauticalDuskColor,
-              alignSelf: "center",
-              margin: "5px",
-            }}
-          ></div>
-          <p style={{ color: "#999", fontSize: "10px" }}>Nautical Dark</p>
-        </Box>
-        <Box sx={{ alignSelf: "center", display: "flex", margin: "10px" }}>
-          <div
-            style={{
-              width: "15px",
-              height: "15px",
-              borderRadius: "50%",
-              backgroundColor: civilDuskColor,
-              alignSelf: "center",
-              margin: "5px",
-            }}
-          ></div>
-          <p style={{ color: "#999", fontSize: "10px" }}>Civil Dark</p>
-        </Box>
-        <Box sx={{ alignSelf: "center", display: "flex", margin: "10px" }}>
-          <div
-            style={{
-              width: "15px",
-              height: "15px",
-              borderRadius: "50%",
-              backgroundColor: dayColor,
-              alignSelf: "center",
-              margin: "5px",
-            }}
-          ></div>
-          <p style={{ color: "#999", fontSize: "10px" }}>Day</p>
+    <>
+      <Box sx={{ width: "100%" }}>
+        <Slider
+          getAriaLabel={() => "Observation hours"}
+          value={value}
+          onChange={handleChange}
+          onChangeCommitted={handleChangeCommited}
+          valueLabelDisplay={"on"}
+          min={0}
+          max={1440}
+          valueLabelFormat={valueLabelFormat}
+          sx={railBackgroundStyle}
+        />
+        <Box
+          id="hours-slider-legend"
+          sx={{ display: "flex", justifyContent: "center" }}
+        >
+          <Box sx={{ alignSelf: "center", display: "flex", margin: "10px" }}>
+            <div
+              style={{
+                width: "15px",
+                height: "15px",
+                borderRadius: "50%",
+                backgroundColor: astroDuskColor,
+                alignSelf: "center",
+                margin: "5px",
+              }}
+            ></div>
+            <p style={{ color: "#999", fontSize: "10px" }}>Astro Dark</p>
+          </Box>
+          <Box sx={{ alignSelf: "center", display: "flex", margin: "10px" }}>
+            <div
+              style={{
+                width: "15px",
+                height: "15px",
+                borderRadius: "50%",
+                backgroundColor: nauticalDuskColor,
+                alignSelf: "center",
+                margin: "5px",
+              }}
+            ></div>
+            <p style={{ color: "#999", fontSize: "10px" }}>Nautical Dark</p>
+          </Box>
+          <Box sx={{ alignSelf: "center", display: "flex", margin: "10px" }}>
+            <div
+              style={{
+                width: "15px",
+                height: "15px",
+                borderRadius: "50%",
+                backgroundColor: civilDuskColor,
+                alignSelf: "center",
+                margin: "5px",
+              }}
+            ></div>
+            <p style={{ color: "#999", fontSize: "10px" }}>Civil Dark</p>
+          </Box>
+          <Box sx={{ alignSelf: "center", display: "flex", margin: "10px" }}>
+            <div
+              style={{
+                width: "15px",
+                height: "15px",
+                borderRadius: "50%",
+                backgroundColor: dayColor,
+                alignSelf: "center",
+                margin: "5px",
+              }}
+            ></div>
+            <p style={{ color: "#999", fontSize: "10px" }}>Day</p>
+          </Box>
         </Box>
       </Box>
-    </Box>
+      <Slider defaultValue={[50]} max={100} step={1} />
+    </>
   );
 }

@@ -1,5 +1,5 @@
 import MapView from "./MapView";
-// import HoursSlider from "./HoursSlider";
+import HoursSlider from "./HoursSlider";
 // import FilteredObjectsTable from "./FilteredObjectsTable";
 // import AngleSlider from "./AngleSlider";
 import { useEffect, useState } from "react";
@@ -25,13 +25,10 @@ export default function WimmerTablePage() {
 
   maptilerClient.config.apiKey = import.meta.env.VITE_MAP_TILER_API_KEY;
 
-  // function handleStartTimeUpdate(startTime: Date) {
-  //   setStartTime(startTime);
-  // }
-
-  // function handleEndTimeUpdate(endTime: Date) {
-  //   setEndTime(endTime);
-  // }
+  function handleObservationTimeUpdate(startTime: Date, endTime: Date) {
+    setStartTime(startTime);
+    setEndTime(endTime);
+  }
 
   async function updateCoordinates(lon: number, lat: number) {
     setLatitude(lat);
@@ -105,9 +102,6 @@ export default function WimmerTablePage() {
 
   return (
     <>
-      <p className="text-white">
-        Lat: {latitude} Lon: {longitude}
-      </p>
       <SearchBar updateCoordinates={updateCoordinates} />
       <Button onClick={handleGeolocationButton}>
         <LocationIcon />
@@ -118,11 +112,21 @@ export default function WimmerTablePage() {
         lat={latitude === null ? 51.1079 : latitude}
         updateCoordinates={updateCoordinates}
       />
-      <Input
-        placeholder="Longitude"
-        defaultValue={longitude?.toFixed(4) ?? ""}
+      <div className="flex">
+        <Input
+          placeholder="Longitude"
+          defaultValue={longitude?.toFixed(4) ?? ""}
+        />
+        <Input
+          placeholder="Latitude"
+          defaultValue={latitude?.toFixed(4) ?? ""}
+        />
+      </div>
+      <HoursSlider
+        latitude={latitude}
+        longitude={longitude}
+        handleObservationTimeUpdate={handleObservationTimeUpdate}
       />
-      <Input placeholder="Latitude" defaultValue={latitude?.toFixed(4) ?? ""} />
     </>
   );
 }
