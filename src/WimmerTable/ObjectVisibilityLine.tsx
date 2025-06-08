@@ -1,19 +1,24 @@
-import { useTheme } from "@emotion/react";
 import Box from "@mui/material/Box";
+
+type ObjectVisibilityLineProps = {
+  startTime: Date;
+  endTime: Date;
+  observationStart: Date;
+  observationEnd: Date;
+};
 
 export default function ObjectVisibilityLine({
   startTime,
   endTime,
   observationStart,
   observationEnd,
-}) {
-  const totalTime = endTime - startTime;
-  const totalObservationTime = observationEnd - observationStart;
+}: ObjectVisibilityLineProps) {
+  const totalTime = endTime.getTime() - startTime.getTime();
+  const totalObservationTime =
+    observationEnd.getTime() - observationStart.getTime();
   const observationStartOffset =
-    (100 * (observationStart - startTime)) / totalTime;
+    (100 * (observationStart.getTime() - startTime.getTime())) / totalTime;
   const observationLineLength = (100 * totalObservationTime) / totalTime;
-
-  const theme = useTheme();
 
   const backgroundColor = "#343452";
 
@@ -21,8 +26,6 @@ export default function ObjectVisibilityLine({
           to right,
           ${backgroundColor} 0%,
           ${backgroundColor} ${observationStartOffset}%,
-          ${theme.palette.primary.main} ${observationStartOffset}%,
-          ${theme.palette.primary.main} ${observationStartOffset + observationLineLength}%,
           ${backgroundColor} ${observationStartOffset + observationLineLength}%,
           ${backgroundColor} 100%)`;
 

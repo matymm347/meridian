@@ -6,8 +6,7 @@ import Paper from "@mui/material/Paper";
 import * as Astronomy from "astronomy-engine";
 import NoteBox from "./NoteBox";
 import { Button } from "@mui/material";
-import React from "react";
-import PropTypes from "prop-types";
+import type { GridColDef, GridRenderCellParams } from "@mui/x-data-grid";
 
 const objectNotesIds = [
   "great_for_binoculars",
@@ -19,14 +18,13 @@ const objectNotesIds = [
 ];
 
 function observationFilter(
-  nr,
-  latitude,
-  longitude,
-  angle,
-  startTime,
-  endTime,
-  ra,
-  dec
+  latitude: number,
+  longitude: number,
+  angle: number,
+  startTime: Date,
+  endTime: Date,
+  ra: number,
+  dec: number
 ) {
   const startTimeAstro = Astronomy.MakeTime(startTime);
   const endTimeAstro = Astronomy.MakeTime(endTime);
@@ -36,7 +34,7 @@ function observationFilter(
   dateForLastMidnight.setUTCHours(0);
   const lastMidnightTime = Astronomy.MakeTime(dateForLastMidnight);
 
-  Astronomy.DefineStar("Star1", ra, dec, 1000);
+  Astronomy.DefineStar(Astronomy.Body.Star1, ra, dec, 1000);
 
   const startAz = Astronomy.Horizon(
     startTimeAstro,
@@ -47,7 +45,7 @@ function observationFilter(
   );
 
   const atTargetAngleAscend = Astronomy.SearchAltitude(
-    "Star1",
+    Astronomy.Body.Star1,
     observer,
     1,
     lastMidnightTime,
@@ -56,7 +54,7 @@ function observationFilter(
   );
 
   let atTargetAngleDescend = Astronomy.SearchAltitude(
-    "Star1",
+    Astronomy.Body.Star1,
     observer,
     -1,
     lastMidnightTime,
@@ -64,18 +62,27 @@ function observationFilter(
     angle
   );
 
-  if (atTargetAngleDescend < atTargetAngleAscend) {
-    atTargetAngleDescend = Astronomy.SearchAltitude(
-      "Star1",
-      observer,
-      -1,
-      atTargetAngleAscend,
-      1,
-      angle
-    );
+  if (atTargetAngleAscend && atTargetAngleDescend) {
+    // If not null
+    if (atTargetAngleDescend < atTargetAngleAscend) {
+      atTargetAngleDescend = Astronomy.SearchAltitude(
+        Astronomy.Body.Star1,
+        observer,
+        -1,
+        atTargetAngleAscend,
+        1,
+        angle
+      );
+    }
   }
 
-  const objectData = {
+  interface ObjectData {
+    available: boolean;
+    observationStart: Date | null;
+    observationEnd: Date | null;
+  }
+
+  const objectData: ObjectData = {
     available: false,
     observationStart: null,
     observationEnd: null,
@@ -104,12 +111,15 @@ function observationFilter(
   }
 
   // Test if star trail is within observation hours
-  if (
-    (atTargetAngleAscend < startTimeAstro &&
-      atTargetAngleDescend < startTimeAstro) ||
-    (atTargetAngleAscend > endTimeAstro && atTargetAngleDescend > endTimeAstro)
-  ) {
-    return objectData;
+  if (atTargetAngleAscend && atTargetAngleDescend) {
+    if (
+      (atTargetAngleAscend < startTimeAstro &&
+        atTargetAngleDescend < startTimeAstro) ||
+      (atTargetAngleAscend > endTimeAstro &&
+        atTargetAngleDescend > endTimeAstro)
+    ) {
+      return objectData;
+    }
   }
 
   // Additional test for returned null value when star is always below given angle
@@ -135,24 +145,51 @@ function observationFilter(
   return objectData;
 }
 
-function returnObjectName(params) {
+function returnObjectName(
+  params: GridRenderCellParams<
+    any,
+    {
+      messier?: number | null;
+      ngc?: number | null;
+      mel?: number | null;
+      ic?: number | null;
+    }
+  >
+): string {
   const catalogPrefixes = [
     { key: "messier", prefix: "M" },
     { key: "ngc", prefix: "NGC " },
     { key: "mel", prefix: "Mel " },
     { key: "ic", prefix: "IC " },
-  ];
+  ] as const;
 
-  const result = catalogPrefixes.find(({ key }) => params.value[key] !== null);
+  const result = catalogPrefixes.find(
+    ({ key }) => params?.value?.[key] !== null
+  );
   if (result) {
-    return `${result.prefix}${params.value[result.key]}`;
+    return `${result.prefix}${params?.value?.[result.key]}`;
   } else {
     return "";
   }
 }
 
-function returnObjectType(params) {
-  const style = {
+function returnObjectType(
+  params: GridRenderCellParams<
+    any,
+    {
+      galaxy: boolean | null;
+      open_cluster: boolean | null;
+      globular_cluster: boolean | null;
+      double_star: boolean | null;
+      nebula: boolean | null;
+      diffuse_nebulae: boolean | null;
+      emmision_nebulae: boolean | null;
+      reflection_nebulae: boolean | null;
+      planetary_nebulae: boolean | null;
+    }
+  >
+): React.ReactNode {
+  const style: React.CSSProperties = {
     borderRadius: "8px",
     padding: "2px 4px",
     fontSize: "12px",
@@ -170,10 +207,10 @@ function returnObjectType(params) {
     { key: "emmision_nebulae", prefix: "Emmision Nebulae" },
     { key: "reflection_nebulae", prefix: "Reflection Nebulae" },
     { key: "planetary_nebulae", prefix: "Planetary Nebulae" },
-  ];
+  ] as const;
 
   const objectType = objectTypePrefixes.filter(
-    ({ key }) => params.value[key] !== false
+    ({ key }) => params?.value?.[key] !== false
   );
 
   return (
@@ -189,10 +226,10 @@ function returnObjectType(params) {
   );
 }
 
-function returnDifficulty(params) {
+function returnDifficulty(params: GridRenderCellParams<any, 1 | 2 | 3>) {
   const difficulty = params.value;
 
-  const style = {
+  const style: React.CSSProperties = {
     width: "15px",
     height: "15px",
     borderRadius: "50%",
@@ -214,33 +251,46 @@ function returnDifficulty(params) {
   return <div style={style}></div>;
 }
 
-function returnVisibilityWindow(prop) {
+function returnVisibilityWindow(
+  prop: GridRenderCellParams<
+    any,
+    {
+      objectData: { observationStart: Date; observationEnd: Date };
+      startTime: Date;
+      endTime: Date;
+    }
+  >
+) {
   return (
     <>
       <Box>
         <Box>
-          {prop.value.objectData.observationStart
+          {prop?.value?.objectData.observationStart
             .toLocaleTimeString()
             .slice(0, 5)}
           {" - "}
-          {prop.value.objectData.observationEnd
+          {prop?.value?.objectData.observationEnd
             .toLocaleTimeString()
             .slice(0, 5)}
         </Box>
-        <ObjectVisibilityLine
-          startTime={prop.value.startTime}
-          endTime={prop.value.endTime}
-          observationStart={prop.value.objectData.observationStart}
-          observationEnd={prop.value.objectData.observationEnd}
-        />
+        {prop?.value?.startTime && prop?.value?.endTime && (
+          <ObjectVisibilityLine
+            startTime={prop.value.startTime}
+            endTime={prop.value.endTime}
+            observationStart={prop.value.objectData.observationStart}
+            observationEnd={prop.value.objectData.observationEnd}
+          />
+        )}
       </Box>
     </>
   );
 }
 
-function returnNotes(params) {
+function returnNotes(
+  params: GridRenderCellParams<any, { [id: string]: boolean }>
+) {
   const notesList = objectNotesIds.map((id) => {
-    if (params.value[id] === true) {
+    if (params?.value?.[id]) {
       return <NoteBox key={id} id={id} />;
     }
   });
@@ -248,14 +298,22 @@ function returnNotes(params) {
   return <Box>{notesList}</Box>;
 }
 
+type FilteredObjectsTableProps = {
+  latitude: number;
+  longitude: number;
+  angle: number;
+  startTime: Date;
+  endTime: Date;
+};
+
 export default function FilteredObjectsTable({
   latitude,
   longitude,
   angle,
   startTime,
   endTime,
-}) {
-  const columns = [
+}: FilteredObjectsTableProps) {
+  const columns: GridColDef[] = [
     {
       field: "name",
       headerName: "Name",
@@ -295,7 +353,6 @@ export default function FilteredObjectsTable({
   const rows = wimmerTable
     .map((row) => {
       const objectData = observationFilter(
-        row.nr,
         latitude,
         longitude,
         angle,
@@ -309,8 +366,13 @@ export default function FilteredObjectsTable({
         return;
       }
       // Filter out objects visible for less than 15 minutes
-      const visibilityTime =
-        objectData.observationEnd - objectData.observationStart;
+      let visibilityTime = 0;
+
+      if (objectData.observationStart && objectData.observationEnd) {
+        visibilityTime =
+          objectData.observationEnd.getTime() -
+          objectData.observationStart.getTime();
+      }
       const minimumVisibilityTime = 15 * 60 * 1000; // 15 minutes
       if (visibilityTime < minimumVisibilityTime) {
         return;
@@ -343,18 +405,9 @@ export default function FilteredObjectsTable({
           sx={{
             border: 0,
           }}
-          pagination={false}
           hideFooterPagination={false}
         />
       </Paper>
     </>
   );
 }
-
-FilteredObjectsTable.propTypes = {
-  latitude: PropTypes.number.isRequired,
-  longitude: PropTypes.number.isRequired,
-  angle: PropTypes.number.isRequired,
-  startTime: PropTypes.instanceOf(Date).isRequired,
-  endTime: PropTypes.instanceOf(Date).isRequired,
-};

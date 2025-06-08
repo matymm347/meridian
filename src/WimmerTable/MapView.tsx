@@ -2,11 +2,26 @@ import "@maptiler/sdk/dist/maptiler-sdk.css";
 import Dialog from "@mui/material/Dialog";
 import DialogTitle from "@mui/material/DialogTitle";
 import * as maptilersdk from "@maptiler/sdk";
-import { useEffect, useRef } from "react";
+import { useEffect } from "react";
 
 maptilersdk.config.apiKey = import.meta.env.VITE_MAP_TILER_API_KEY;
 
-function Map({ lon, lat, opened, updateCoordinates }) {
+type MapProps = {
+  lon: number;
+  lat: number;
+  opened: boolean;
+  updateCoordinates: (lon: number, lat: number) => void;
+};
+
+type MapViewProps = {
+  lon: number;
+  lat: number;
+  opened: boolean;
+  onClose: () => void;
+  updateCoordinates: (lon: number, lat: number) => void;
+};
+
+function Map({ lon, lat, opened, updateCoordinates }: MapProps) {
   useEffect(() => {
     if (!opened) return;
 
@@ -24,6 +39,8 @@ function Map({ lon, lat, opened, updateCoordinates }) {
       updateCoordinates(e.lngLat.lng, e.lngLat.lat);
     });
   }, []);
+
+  return null;
 }
 
 export default function MapView({
@@ -32,7 +49,7 @@ export default function MapView({
   opened,
   onClose,
   updateCoordinates,
-}) {
+}: MapViewProps) {
   return (
     <>
       <Dialog open={opened} onClose={onClose} maxWidth={false}>

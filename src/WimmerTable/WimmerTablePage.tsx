@@ -285,17 +285,21 @@ export default function WimmerTablePage() {
           inactive={longitude === null || latitude === null ? true : false}
           handleAngleChange={handleAngleChange}
         />
-        {startTime !== null && endTime !== null && angle !== null && (
-          <>
-            <FilteredObjectsTable
-              latitude={latitude}
-              longitude={longitude}
-              angle={angle}
-              startTime={startTime}
-              endTime={endTime}
-            />
-          </>
-        )}
+        {startTime !== null &&
+          endTime !== null &&
+          angle !== null &&
+          latitude !== null &&
+          longitude !== null && (
+            <>
+              <FilteredObjectsTable
+                latitude={latitude}
+                longitude={longitude}
+                angle={angle}
+                startTime={startTime}
+                endTime={endTime}
+              />
+            </>
+          )}
       </Box>
     </>
   );

@@ -1,7 +1,6 @@
-import { Height } from "@mui/icons-material";
 import { Box } from "@mui/material";
 
-export default function NoteBox({ id }) {
+export default function NoteBox({ id }: { id: string }) {
   const commonStyle = {
     borderRadius: "5px",
     display: "inline-block",
@@ -72,6 +71,11 @@ export default function NoteBox({ id }) {
   ];
 
   const selected = objectNotesPrefixesStyles.find((item) => item.key === id);
+
+  if (!selected) {
+    return null;
+  }
+
   const { style, prefix } = selected;
 
   return <Box style={style}>{prefix}</Box>;

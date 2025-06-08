@@ -1,4 +1,3 @@
-import PropTypes from "prop-types";
 import Box from "@mui/material/Box";
 import Slider from "@mui/material/Slider";
 import { useEffect, useState } from "react";
@@ -7,25 +6,36 @@ const defaultAngle = [30];
 const sliderLabel = "Minimum altitude angle";
 const sliderWidth = "50%";
 
-export default function AngleSlider({ inactive, handleAngleChange }) {
-  const [value, setValue] = useState(defaultAngle);
-  const [atDefaultState, setAtDefaultState] = useState(true);
+type AngleSliderProps = {
+  inactive: boolean;
+  handleAngleChange: (angle: number) => void;
+};
 
-  const handleChangeCommited = (event, value) => {
-    setAtDefaultState(false);
+export default function AngleSlider({
+  inactive,
+  handleAngleChange,
+}: AngleSliderProps) {
+  const [value, setValue] = useState<number[]>(defaultAngle);
+
+  const handleChangeCommited = (value: number | number[]) => {
+    if (Array.isArray(value)) {
+      return;
+    }
     handleAngleChange(value);
   };
 
-  function valueLabelFormat(value) {
+  function valueLabelFormat(value: number) {
     return value + "°";
   }
 
-  function handleChange(event, newValue) {
-    setValue(newValue);
+  function handleChange(newValue: number | number[]) {
+    if (Array.isArray(newValue)) {
+      setValue(newValue);
+    }
   }
 
   useEffect(() => {
-    handleChangeCommited(null, value);
+    handleChangeCommited(value);
   }, []);
 
   return (
@@ -44,8 +54,8 @@ export default function AngleSlider({ inactive, handleAngleChange }) {
           <Slider
             getAriaLabel={() => sliderLabel}
             value={value}
-            onChange={handleChange}
-            onChangeCommitted={handleChangeCommited}
+            onChange={(_event, value) => handleChange(value)}
+            onChangeCommitted={(_event, value) => handleChangeCommited(value)}
             valueLabelDisplay={"on"}
             min={0}
             max={90}
