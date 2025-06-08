@@ -246,9 +246,12 @@ export default function HoursSlider({
     let hours = Math.floor(value / 60);
     let minutes = value % 60;
     let minutesString = "";
+
     // add leading 0
     if (minutes < 10) {
       minutesString = `0${minutes}`;
+    } else {
+      minutesString = `${minutes}`;
     }
 
     // reset counter after midnight

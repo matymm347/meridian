@@ -19,9 +19,8 @@ export default function AngleSlider({
 
   const handleChangeCommited = (value: number | number[]) => {
     if (Array.isArray(value)) {
-      return;
+      handleAngleChange(value[0]);
     }
-    handleAngleChange(value);
   };
 
   function valueLabelFormat(value: number) {

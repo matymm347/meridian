@@ -115,7 +115,7 @@ export default function WimmerTablePage() {
   }
 
   function handleAngleChange(angle: number) {
-    setAngle(Number(angle));
+    setAngle(angle);
   }
 
   useEffect(() => {
