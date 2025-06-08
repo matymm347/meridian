@@ -21,11 +21,14 @@ export default function ObjectVisibilityLine({
   const observationLineLength = (100 * totalObservationTime) / totalTime;
 
   const backgroundColor = "#343452";
+  const foregroundColor = "#f28968";
 
   const style = `linear-gradient(
           to right,
           ${backgroundColor} 0%,
           ${backgroundColor} ${observationStartOffset}%,
+          ${foregroundColor} ${observationStartOffset}%,
+          ${foregroundColor} ${observationStartOffset + observationLineLength}%,
           ${backgroundColor} ${observationStartOffset + observationLineLength}%,
           ${backgroundColor} 100%)`;
 

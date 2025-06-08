@@ -9,8 +9,10 @@ import Slider from "@mui/material/Slider";
 import AngleSlider from "./AngleSlider";
 import { useEffect, useState } from "react";
 import * as maptilerClient from "@maptiler/client";
+import type { GeocodingSearchResult } from "@maptiler/sdk";
 
 export default function WimmerTablePage() {
+  const [apiData, setApiData] = useState<GeocodingSearchResult | null>(null);
   const [placeName, setPlaceName] = useState("");
   const [latitude, setLatitude] = useState<number | null>(null);
   const [longitude, setLongitude] = useState<number | null>(null);
@@ -86,18 +88,24 @@ export default function WimmerTablePage() {
     setMapWindowOpened(false);
   }
 
-  // function handlePlaceChange(value: string) {
-  //   const id = placesList.indexOf(value);
-  //   if (apiData?.features?.[id]) {
-  //     const geometry = apiData.features[id].geometry;
+  function handlePlaceChange(value: string | null) {
+    if (value === null) {
+      return;
+    }
 
-  //     if (geometry.type === "Point") {
-  //       const [lon, lat] = geometry.coordinates;
-  //       setLongitude(lon);
-  //       setLatitude(lat);
-  //     }
-  //   }
-  // }
+    setPlaceName(value);
+
+    const id = placesList.indexOf(value);
+    if (apiData?.features?.[id]) {
+      const geometry = apiData.features[id].geometry;
+
+      if (geometry.type === "Point") {
+        const [lon, lat] = geometry.coordinates;
+        setLongitude(lon);
+        setLatitude(lat);
+      }
+    }
+  }
 
   function handleLatFieldChange(
     event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -134,6 +142,7 @@ export default function WimmerTablePage() {
 
       try {
         const data = await maptilerClient.geocoding.forward(placeName);
+        setApiData(data);
 
         const places = data.features.map((feature) => {
           if (feature?.context?.[2]?.text) {
@@ -179,6 +188,7 @@ export default function WimmerTablePage() {
             <Autocomplete
               fullWidth={true}
               onInputChange={(_event, place) => setPlaceName(place)}
+              onChange={(_event, value, _reason) => handlePlaceChange(value)}
               filterOptions={(x) => x} // disable built-in filtering
               options={placesList}
               renderInput={(params) => (
