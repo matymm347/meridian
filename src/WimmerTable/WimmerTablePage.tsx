@@ -9,10 +9,8 @@ import Slider from "@mui/material/Slider";
 import AngleSlider from "./AngleSlider";
 import { useEffect, useState } from "react";
 import * as maptilerClient from "@maptiler/client";
-import type { GeocodingSearchResult } from "@maptiler/sdk";
 
 export default function WimmerTablePage() {
-  const [apiData, setApiData] = useState<GeocodingSearchResult | null>(null);
   const [placeName, setPlaceName] = useState("");
   const [latitude, setLatitude] = useState<number | null>(null);
   const [longitude, setLongitude] = useState<number | null>(null);
@@ -40,7 +38,6 @@ export default function WimmerTablePage() {
 
     const data = await maptilerClient.geocoding.reverse([lon, lat]);
 
-    setApiData(data);
     data?.features?.[0]?.context?.[1]?.text &&
       setPlaceName(data.features[0].context[1].text);
   }
@@ -138,7 +135,6 @@ export default function WimmerTablePage() {
       try {
         const data = await maptilerClient.geocoding.forward(placeName);
 
-        setApiData(data);
         const places = data.features.map((feature) => {
           if (feature?.context?.[2]?.text) {
             return `${feature.place_name}, ${feature.context[2].text}`;
