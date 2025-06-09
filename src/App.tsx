@@ -12,13 +12,16 @@ function App() {
       <AppBar
         position="fixed"
         sx={{
-          backgroundImage:
-            "radial-gradient(circle,rgba(94, 66, 135, 1) 0%, rgba(17, 21, 36, 1) 100%)",
+          backgroundColor: "#03101F",
           border: "1px solid rgba(255, 255, 255, 0.2)", // subtle semi-transparent border
         }}
       >
         <Toolbar>
-          <img className="w-10" src={logo} alt="Logo" />
+          <img
+            style={{ width: "50px", height: "50px" }}
+            src={logo}
+            alt="Logo"
+          />
           <Typography variant="h5" sx={{ paddingLeft: "20px" }}>
             Meridian
           </Typography>
